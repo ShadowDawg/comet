@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "189041618462",
+    "firebase_url": "https://astro-app1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "astro-app1",
+    "storage_bucket": "astro-app1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189041618462:android:37ae6bf02812a3b37bc80f",
+        "android_client_info": {
+          "package_name": "com.example.test1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNeryjLopXXQzjuqDJU6YpUr_PjY4FfDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
