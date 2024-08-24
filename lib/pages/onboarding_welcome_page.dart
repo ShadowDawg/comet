@@ -10,7 +10,8 @@ class OnboardingWelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: offwhite,
+      // backgroundColor: offwhite,
+      backgroundColor: bgcolor, // dark
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -31,8 +32,9 @@ class OnboardingWelcomePage extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 50,
-                              fontWeight: FontWeight.bold,
-                              color: bgcolor,
+                              // fontWeight: FontWeight.bold,
+                              // color: bgcolor,
+                              color: yelloww, // dark
                               fontFamily: 'Playwrite_HU',
                             ),
                           ),
@@ -43,7 +45,8 @@ class OnboardingWelcomePage extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 27,
-                            color: Colors.black87,
+                            // color: Colors.black87,
+                            color: greyy, // dark
                             fontFamily: 'Manrope',
                           ),
                         ),
@@ -52,8 +55,10 @@ class OnboardingWelcomePage extends StatelessWidget {
                           onPressed: () =>
                               _navigateTo(context, BirthdayInputPage()),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: bgcolor,
-                            foregroundColor: offwhite,
+                            // backgroundColor: bgcolor,
+                            backgroundColor: yelloww, // dark
+                            // foregroundColor: offwhite,
+                            foregroundColor: bgcolor, // dark
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 40, vertical: 15),
                             textStyle: const TextStyle(fontSize: 18),
@@ -61,18 +66,26 @@ class OnboardingWelcomePage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text('Get Started'),
+                          child: const Text(
+                            'Get Started',
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         TextButton(
                           onPressed: () => _navigateTo(context, LoginPage()),
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.black87,
+                            foregroundColor: greyy,
                           ),
                           child: const Text(
                             'Already have an account? Sign in',
-                            style:
-                                TextStyle(decoration: TextDecoration.underline),
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              decoration: TextDecoration.underline,
+                              color: offwhite,
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -94,6 +107,7 @@ class OnboardingWelcomePage extends StatelessWidget {
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: page,
+        // duration: const Duration(milliseconds: 500),
       ),
     );
   }

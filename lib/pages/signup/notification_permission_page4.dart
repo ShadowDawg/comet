@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/pages/signup_details_page.dart';
 
-class NotificationPermissionPage extends StatelessWidget {
+class NotificationPermissionPage extends StatefulWidget {
   final DateTime birthday;
   final String birthplace;
   final String zodiacSign;
@@ -15,6 +16,22 @@ class NotificationPermissionPage extends StatelessWidget {
     required this.birthplace,
     required this.zodiacSign,
   }) : super(key: key);
+
+  @override
+  _NotificationPermissionPageState createState() =>
+      _NotificationPermissionPageState();
+}
+
+class _NotificationPermissionPageState
+    extends State<NotificationPermissionPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // This will be called after the widget has been built
+      FocusScope.of(context).unfocus();
+    });
+  }
 
   Future<void> _requestPermissionAndNavigate(BuildContext context) async {
     try {
@@ -51,9 +68,9 @@ class NotificationPermissionPage extends StatelessWidget {
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: SignupDetailsPage(
-          birthday: birthday,
-          birthplace: birthplace,
-          zodiacSign: zodiacSign,
+          birthday: widget.birthday,
+          birthplace: widget.birthplace,
+          zodiacSign: widget.zodiacSign,
           notificationsEnabled: notificationsEnabled,
         ),
       ),
@@ -92,72 +109,86 @@ class NotificationPermissionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tile_color,
+      backgroundColor: bgcolor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: offwhite),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: greyy,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.notifications_active, size: 80, color: offwhite),
-              const SizedBox(height: 24),
-              const Text(
-                "Stay in the loop!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Manrope',
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "Enable notifications to get timely updates. Pinky promise we don't spam!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Manrope',
-                ),
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => _requestPermissionAndNavigate(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: offwhite,
-                  foregroundColor: bgcolor,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Icon(
+                    Icons.notifications_active,
+                    size: 80,
+                    color: yelloww,
                   ),
-                ),
-                child: const Text(
-                  "Enable Notifications",
-                  style: TextStyle(fontSize: 18, fontFamily: 'Manrope'),
-                ),
-              ),
-              TextButton(
-                onPressed: () => _navigateToSignupDetails(context, false),
-                child: const Text(
-                  "Maybe Later",
-                  style: TextStyle(
-                    color: offwhite,
-                    fontSize: 16,
-                    fontFamily: 'Manrope',
+                  const SizedBox(height: 24),
+                  const Text(
+                    "Stay in the loop!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: yelloww,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Manrope',
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Enable notifications to get timely updates. Pinky promise we don't spam!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: greyy,
+                      fontSize: 16,
+                      fontFamily: 'Manrope',
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: () => _requestPermissionAndNavigate(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: darkGreyy,
+                      foregroundColor: yelloww,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "Enable Notifications",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'Manrope',
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => _navigateToSignupDetails(context, false),
+                    child: const Text(
+                      "Maybe Later",
+                      style: TextStyle(
+                        color: greyy,
+                        fontSize: 16,
+                        fontFamily: 'Manrope',
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

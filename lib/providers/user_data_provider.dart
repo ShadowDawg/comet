@@ -19,16 +19,45 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Fetch data from API using the provided function
       _userData = await backendFirebaseGetUserAndAstroData(userId);
-
-      // Save data to local storage
       await _saveToLocalStorage(_userData!);
     } catch (e) {
-      _error = 'Failed to fetch user data. Using cached data if available.';
+      _error = 'Failed to fetch user data.';
       print('Error fetching user data: $e');
-      // Try to load data from local storage
       _userData = await _loadFromLocalStorage();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshUserData() async {
+    if (_userData == null) {
+      _error = 'No user data available to refresh.';
+      notifyListeners();
+      return;
+    }
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      String userId = _userData!.user.uid;
+      UserAndAstroData refreshedData =
+          await backendFirebaseGetUserAndAstroData(userId);
+
+      // Update the current data
+      _userData = refreshedData;
+
+      // Save to local storage
+      await _saveToLocalStorage(_userData!);
+
+      _error = null;
+    } catch (e) {
+      _error = 'Failed to refresh user data.';
+      print('Error refreshing user data: $e');
+      // We don't load from local storage here as we want to keep the existing data
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -49,9 +78,9 @@ class UserDataProvider extends ChangeNotifier {
     }
   }
 
-  void clearUserData() {
+  Future<void> clearUserData() async {
     _userData = null;
-    _clearLocalStorage();
+    await _clearLocalStorage();
     notifyListeners();
   }
 

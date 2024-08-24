@@ -41,12 +41,18 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: offwhite,
+      // backgroundColor: offwhite,
+      backgroundColor: bgcolor, // dark
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        forceMaterialTransparency: true,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: bgcolor),
+          icon: const Icon(
+            Icons.arrow_back,
+            // color: bgcolor,
+            color: greyy, // dark
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -61,7 +67,8 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  // color: Colors.black87,
+                  color: greyy, // dark
                   fontFamily: 'Manrope',
                 ),
               ),
@@ -74,7 +81,8 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                       data: const CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
                           dateTimePickerTextStyle: TextStyle(
-                            color: Colors.black87,
+                            // color: Colors.black87,
+                            color: yelloww,
                             fontSize: 20,
                             fontFamily: 'Manrope',
                           ),
@@ -92,21 +100,23 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                   ),
                 ),
               ),
-              Text(
-                'Your data is used only for your personalized horoscopes and match-finding. It is never shared with third parties.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                  fontStyle: FontStyle.italic,
-                  fontFamily: 'Manrope',
-                ),
-              ),
+              // Text(
+              //   'Your data is used only for your personalized horoscopes and match-finding. It is never shared with third parties.',
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     color: Colors.grey[600],
+              //     fontStyle: FontStyle.italic,
+              //     fontFamily: 'Manrope',
+              //   ),
+              // ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _navigateToNextPage,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: bgcolor,
-                  foregroundColor: offwhite,
+                  // backgroundColor: bgcolor,
+                  backgroundColor: yelloww, // dark
+                  // foregroundColor: offwhite,
+                  foregroundColor: bgcolor, // dark
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

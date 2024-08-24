@@ -24,14 +24,20 @@ class AstroDataModel {
   });
 
   factory AstroDataModel.fromJson(Map<String, dynamic> json) {
+    String sanitizeString(String? input) {
+      print("AYY: $input");
+      if (input == null) return '';
+      return input.replaceAll('—', '-').replaceAll('’', "'");
+    }
+
     return AstroDataModel(
       uid: json['uid'] ?? '',
-      dailyHoroscope: json['dailyHoroscope'] ?? '',
-      detailedReading: json['detailedReading'] ?? '',
+      dailyHoroscope: sanitizeString(json['dailyHoroscope']),
+      detailedReading: sanitizeString(json['detailedReading']),
       matchUid: json['matchUid'] ?? '',
       matchApproved: json['matchApproved'] ?? false,
       lastUpdated: json['lastUpdated'],
-      chatRoomId: json['chatRoomId'] ?? '',
+      chatRoomId: json['chatRoomId'] ?? 'hmm',
       planetSigns: json['planetSigns'] as Map<String, dynamic>? ?? {},
       actionTable: _parseActionTable(json['actionTable']),
     );

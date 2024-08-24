@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test1/colors.dart';
 
-String capitalizeFirstLetter(String text) {
+String capitalizeEveryWord(String text) {
   if (text.isEmpty) return text;
-  return text[0].toUpperCase() + text.substring(1);
+
+  return text.split(' ').map((word) {
+    if (word.isEmpty) return word;
+    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }).join(' ');
 }
 
 class HoroscopeCard extends StatelessWidget {
@@ -42,7 +46,7 @@ class HoroscopeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String capitalizedName = capitalizeFirstLetter(userName);
+    String capitalizedName = capitalizeEveryWord(userName);
 
     return Card(
       elevation: 4,
@@ -57,19 +61,20 @@ class HoroscopeCard extends StatelessWidget {
           children: [
             Text(
               '${_getGreeting()}, $capitalizedName',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontFamily: 'Playwrite_HU',
-                color: whitee,
+                color: offwhite,
               ),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               _getTodayInfo(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontFamily: 'Manrope',
-                color: whitee.withOpacity(0.7),
+                color: greyy,
               ),
               textAlign: TextAlign.center,
             ),
@@ -94,29 +99,44 @@ class GreetingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height:
-          MediaQuery.of(context).size.height * 0.10, // 15% of the screen height
-      padding: const EdgeInsets.all(16), // Padding inside the container
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFFC0C0BE), // Colored bottom border
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        // Use a default height if the constraint is undefined
+        double height = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : MediaQuery.of(context).size.height * 0.1;
+
+        double fontSize = height * 0.4; // Adjust this factor as needed
+
+        return Container(
+          height: height,
+          padding: EdgeInsets.symmetric(
+            vertical: height * 0.1,
+            horizontal: constraints.maxWidth * 0.05,
           ),
-        ),
-      ),
-      alignment:
-          Alignment.center, // Centers the text horizontally and vertically
-      child: const Text(
-        // 'Good evening $userName',
-        // 'Good evening Anusha', // TODO remove placeholder for landing page
-        'comet.',
-        style: TextStyle(
-          fontFamily: 'Playwrite_HU', fontSize: 30, color: yelloww,
-          fontWeight:
-              FontWeight.bold, // Uncomment if you decide to make the text bold
-        ),
-      ),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Color(0xFFC0C0BE),
+              ),
+            ),
+          ),
+          child: Center(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Text(
+                'comet.',
+                style: TextStyle(
+                  fontFamily: 'Playwrite_HU',
+                  fontSize: fontSize,
+                  color: yelloww,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -182,20 +202,21 @@ class HoroscopeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         horoscope,
         style: TextStyle(
-            fontFamily: 'Lora',
-            // fontFamily: 'Geist'
-            // fontFamily: 'space',
-            // fontFamily: 'Manrope',
-            // fontFamily: 'Helvetica',
-            fontSize: MediaQuery.of(context).size.width *
-                0.055, // Proportional font size
-            fontWeight: FontWeight.w200,
-            letterSpacing: 1,
-            color: Color(0xFFFEFFFE)),
+          fontFamily: 'Lora',
+          // fontFamily: 'Geist'
+          // fontFamily: 'space',
+          // fontFamily: 'Manrope',
+          // fontFamily: 'Helvetica',
+          fontSize: MediaQuery.of(context).size.width *
+              0.055, // Proportional font size
+          fontWeight: FontWeight.w200,
+          letterSpacing: 1,
+          color: offwhite,
+        ),
         textAlign: TextAlign.center,
         overflow: TextOverflow.visible,
         maxLines: null, // Allows for unlimited lines

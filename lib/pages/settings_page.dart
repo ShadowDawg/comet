@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/initializer_widget.dart';
+import 'package:test1/pages/settings_edit_birth_place.dart';
 import 'package:test1/providers/user_data_provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -155,36 +156,56 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (_) => Container(
         height: 300,
-        color: Colors.white,
+        color: yelloww,
         child: Column(
           children: [
             Expanded(
-              child: CupertinoDatePicker(
-                mode: field == 'birthDate'
-                    ? CupertinoDatePickerMode.date
-                    : CupertinoDatePickerMode.time,
-                initialDateTime: initialDateTime,
-                onDateTimeChanged: (newDateTime) {
-                  tempDateTime = field == 'birthDate'
-                      ? DateTime(
-                          newDateTime.year,
-                          newDateTime.month,
-                          newDateTime.day,
-                          _dateOfBirth.hour,
-                          _dateOfBirth.minute,
-                        )
-                      : DateTime(
-                          _dateOfBirth.year,
-                          _dateOfBirth.month,
-                          _dateOfBirth.day,
-                          newDateTime.hour,
-                          newDateTime.minute,
-                        );
-                },
+              child: CupertinoTheme(
+                data: const CupertinoThemeData(
+                  textTheme: CupertinoTextThemeData(
+                    dateTimePickerTextStyle: TextStyle(
+                      color: bgcolor,
+                      fontSize: 20,
+                      fontFamily: 'Manrope',
+                    ),
+                  ),
+                ),
+                child: CupertinoDatePicker(
+                  mode: field == 'birthDate'
+                      ? CupertinoDatePickerMode.date
+                      : CupertinoDatePickerMode.time,
+                  initialDateTime: initialDateTime,
+                  maximumDate: DateTime.now(),
+                  minimumYear: 1900,
+                  maximumYear: DateTime.now().year,
+                  onDateTimeChanged: (newDateTime) {
+                    tempDateTime = field == 'birthDate'
+                        ? DateTime(
+                            newDateTime.year,
+                            newDateTime.month,
+                            newDateTime.day,
+                            _dateOfBirth.hour,
+                            _dateOfBirth.minute,
+                          )
+                        : DateTime(
+                            _dateOfBirth.year,
+                            _dateOfBirth.month,
+                            _dateOfBirth.day,
+                            newDateTime.hour,
+                            newDateTime.minute,
+                          );
+                  },
+                ),
               ),
             ),
             CupertinoButton(
-              child: const Text('Confirm'),
+              child: const Text(
+                'Confirm',
+                style: TextStyle(
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onPressed: () {
                 if (tempDateTime != null && tempDateTime != _dateOfBirth) {
                   setState(() {
@@ -203,7 +224,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSettingRow(String field, String value, {VoidCallback? onTap}) {
     return ListTile(
-      title: Text(field),
+      title: Text(
+        field,
+        style: const TextStyle(
+          color: offwhite,
+        ),
+      ),
       subtitle: Text(value),
       trailing: onTap != null
           ? const Icon(
@@ -211,21 +237,44 @@ class _SettingsPageState extends State<SettingsPage> {
               color: offwhite,
             )
           : null,
-      onTap: onTap,
+      onTap: field == 'Birth Place' ? () => _editBirthplace(value) : onTap,
       tileColor: tile_color,
-      textColor: offwhite,
+      textColor: yelloww,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
     );
   }
 
+  void _editBirthplace(String currentBirthplace) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            EditBirthplacePage(currentBirthplace: currentBirthplace),
+      ),
+    );
+
+    if (result != null) {
+      // Update the birthplace in your state or database
+      setState(() {
+        // Assuming you have a variable to store the birthplace
+        _updateField("placeOfBirth", result);
+      });
+    }
+  }
+
   Widget _buildNonEditableRow(String field, String value) {
     return ListTile(
-      title: Text(field),
+      title: Text(
+        field,
+        style: const TextStyle(
+          color: offwhite,
+        ),
+      ),
       subtitle: Text(value),
       tileColor: tile_color,
-      textColor: offwhite,
+      textColor: yelloww,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
@@ -252,12 +301,40 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     if (confirmLogout == true) {
-      await FirebaseAuth.instance.signOut();
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const InitializerWidget()),
-          (Route<dynamic> route) => false,
-        );
+      try {
+        // Show loading indicator
+        // showDialog(
+        //   context: context,
+        //   barrierDismissible: false,
+        //   builder: (BuildContext context) {
+        //     return const Center(child: CircularProgressIndicator());
+        //   },
+        // );
+
+        // Log out of auth first
+        await FirebaseAuth.instance.signOut();
+
+        // clear user data in provider and Navigate to InitializerWidget
+        if (mounted) {
+          await Provider.of<UserDataProvider>(context, listen: false)
+              .clearUserData();
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => const InitializerWidget()),
+              (Route<dynamic> route) => false,
+            );
+          }
+        }
+      } catch (e) {
+        // Handle any errors
+        print('Error during logout: $e');
+        // Show error message to user
+      } finally {
+        // Dismiss loading indicator if it's still showing
+        if (mounted && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }
@@ -354,7 +431,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
                       onTap: () async {
@@ -428,14 +505,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       onPressed: _logout,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
+                        minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: const Text(
-                        'Logout',
+                        'Logout :(',
                         style: TextStyle(
                           color: bgcolor,
+                          fontFamily: 'Manrope',
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -444,14 +524,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       onPressed: _deleteAccount,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
+                        minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: const Text(
-                        'Delete Account',
+                        'DELETE ACCOUNT :(((',
                         style: TextStyle(
                           color: bgcolor,
+                          fontFamily: 'Manrope',
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

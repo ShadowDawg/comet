@@ -255,9 +255,9 @@ class _ChatPageState extends State<ChatPage> {
         return false;
       },
       child: Scaffold(
+        backgroundColor: bgcolor,
         appBar: PreferredSize(
-          preferredSize:
-              const Size.fromHeight(kToolbarHeight + 10), // Increased height
+          preferredSize: const Size.fromHeight(kToolbarHeight + 10),
           child: SafeArea(
             child: FutureBuilder<UserAndAstroData>(
               future: matchData,
@@ -286,106 +286,54 @@ class _ChatPageState extends State<ChatPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Scaffold.of(context).openDrawer();
+                            _showUserInfoBottomSheet(context, snapshot.data!);
                           },
                           child: CircleAvatar(
-                            radius: 20, // Increased from 16 to 20
+                            radius: 20,
                             backgroundImage:
                                 NetworkImage(snapshot.data!.user.photoUrl),
                           ),
                         ),
-                        const SizedBox(width: 12), // Increased from 8 to 12
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             snapshot.data!.user.name,
                             style: const TextStyle(
                               fontSize: 18,
                               color: yelloww,
-                            ), // Increased from 16 to 18
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    toolbarHeight: kToolbarHeight + 10, // Increased height
+                    toolbarHeight: kToolbarHeight + 10,
                   );
                 } else {
                   return AppBar(
+                    backgroundColor: bgcolor,
                     leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back, color: yelloww),
                       onPressed: () {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) => const NavigationHome(
-                              initialIndex: 0,
-                            ),
+                            builder: (context) =>
+                                const NavigationHome(initialIndex: 0),
                           ),
                           (route) => false,
                         );
                       },
                     ),
-                    title: const Text("Loading..."),
-                    toolbarHeight: kToolbarHeight + 10, // Increased height
+                    title: const Text(
+                      "",
+                      style: TextStyle(color: yelloww, fontFamily: 'Manrope'),
+                    ),
+                    toolbarHeight: kToolbarHeight + 10,
                   );
                 }
               },
             ),
           ),
-        ),
-        drawer: FutureBuilder<UserAndAstroData>(
-          future: matchData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              return Drawer(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundImage:
-                                NetworkImage(snapshot.data!.user.photoUrl),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            snapshot.data!.user.name,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.cake),
-                      title:
-                          Text("Birthday: ${snapshot.data!.user.dateOfBirth}"),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.star),
-                      title: Text(
-                          "Zodiac: ${snapshot.data!.astroData.planetSigns["sun"]}"),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.location_on),
-                      title:
-                          Text("Location: ${snapshot.data!.user.placeOfBirth}"),
-                    ),
-                    // Add more details as needed
-                  ],
-                ),
-              );
-            } else {
-              return const Drawer(
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-          },
         ),
         body: Center(
           child: FutureBuilder<UserAndAstroData>(
@@ -405,6 +353,13 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     chatBackgroundConfig: const ChatBackgroundConfiguration(
                       backgroundColor: bgcolor,
+                      // backgroundColor: whitee, // light
+                      // messageTimeTextStyle: TextStyle(
+                      //   color: yelloww,
+                      // ),
+                    ),
+                    profileCircleConfig: const ProfileCircleConfiguration(
+                      profileImageUrl: null,
                     ),
                     repliedMessageConfig: const RepliedMessageConfiguration(
                       repliedMsgAutoScrollConfig: RepliedMsgAutoScrollConfig(
@@ -413,38 +368,62 @@ class _ChatPageState extends State<ChatPage> {
                         highlightScale: 1.1,
                       ),
                     ),
-                    sendMessageConfig: SendMessageConfiguration(
-                        textFieldBackgroundColor: tile_color,
-                        sendButtonIcon: const Icon(
-                          Icons.send,
-                          color: yelloww,
-                        )),
-                    chatBubbleConfig: ChatBubbleConfiguration(
-                      // outgoingChatBubbleConfig: ChatBubble(
-                      //   color: yelloww,
-                      //   textStyle: TextStyle(
-                      //     color: bgcolor,
-                      //   ),
-                      // ),
-                      // inComingChatBubbleConfig: ChatBubble(
-                      //   color: tile_color,
-                      // ),
-                      inComingChatBubbleConfig: const ChatBubble(
+                    sendMessageConfig: const SendMessageConfiguration(
+                      textFieldBackgroundColor: tile_color,
+                      // textFieldBackgroundColor: bgcolor, // light
+                      textFieldConfig: TextFieldConfiguration(
+                        hintText: 'Go for it',
+                        hintStyle: TextStyle(
+                          fontFamily: 'Manrope',
+                          color: Colors.grey,
+                        ),
+                        textStyle: TextStyle(
+                          fontFamily: 'Manrope',
+                          color: whitee,
+                        ),
+                      ),
+                      sendButtonIcon: Icon(
+                        Icons.send,
                         color: yelloww,
+                      ),
+                      allowRecordingVoice: false,
+                      imagePickerIconsConfig: ImagePickerIconsConfiguration(
+                        cameraIconColor: yelloww,
+                        galleryIconColor: yelloww,
+                      ),
+                    ),
+                    chatBubbleConfig: const ChatBubbleConfiguration(
+                      inComingChatBubbleConfig: ChatBubble(
+                        color: yelloww,
+                        // color: bgcolor, // light
                         textStyle: TextStyle(
                           color: bgcolor,
+                          // color: whitee, // light
+                          fontFamily: 'Manrope',
                         ),
                       ),
                       outgoingChatBubbleConfig: ChatBubble(
                         color: tile_color,
+                        // color: bgcolor, // light
+                        textStyle: TextStyle(
+                          color: whitee,
+                          // color: whitee, // light
+                          fontFamily: 'Manrope',
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return const Text("Failed to get match details");
+                  return const Center(
+                    child: Text(
+                      "The stars say you're never gonna find love. Just kidding, check your internet connection lmao.",
+                      style: TextStyle(color: whitee, fontFamily: 'Manrope'),
+                    ),
+                  );
                 }
               }
-              return const CircularProgressIndicator();
+              return LoadingWidget();
             },
           ),
         ),
@@ -457,5 +436,294 @@ class _ChatPageState extends State<ChatPage> {
     // Dispose the stream subscription when the state is disposed
     _messageSubscription?.cancel();
     super.dispose();
+  }
+
+  void _showUserInfoBottomSheet(
+      BuildContext context, UserAndAstroData userData) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (_, controller) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: offwhite,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: SingleChildScrollView(
+                controller: controller,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const Text(
+                      "The stars have spoken",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Playwrite_HU',
+                        color: bgcolor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(userData.user.photoUrl),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      userData.user.name,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Manrope',
+                        color: bgcolor,
+                      ),
+                    ),
+                    Text(
+                      "@${userData.user.handle}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Manrope',
+                        color: bgcolor.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Divider(color: bgcolor.withOpacity(0.2), thickness: 1),
+                    const SizedBox(height: 24),
+                    _buildInfoRow(Icons.cake, "Birthday",
+                        _formatDate(userData.user.dateOfBirth)),
+                    _buildInfoRowWithZodiac(Icons.wb_sunny, "Sun Sign",
+                        userData.astroData.planetSigns["sun"] ?? "Unknown"),
+                    _buildInfoRowWithZodiac(Icons.nightlight_round, "Moon Sign",
+                        userData.astroData.planetSigns["moon"] ?? "Unknown"),
+                    _buildInfoRowWithZodiac(
+                        Icons.arrow_upward,
+                        "Ascendant",
+                        userData.astroData.planetSigns["ascendant"] ??
+                            "Unknown"),
+                    _buildInfoRow(Icons.location_on, "Born in",
+                        userData.user.placeOfBirth),
+                    // Add more details as needed
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        children: [
+          Icon(icon, color: bgcolor, size: 24),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Manrope',
+                    fontSize: 14,
+                    color: bgcolor.withOpacity(0.8),
+                  ),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 16,
+                    color: bgcolor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRowWithZodiac(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        children: [
+          Icon(icon, color: bgcolor, size: 24),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Manrope',
+                    fontSize: 14,
+                    color: bgcolor.withOpacity(0.8),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 16,
+                        color: bgcolor,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Image.asset(
+                      'assets/icons/${value.toLowerCase()}-icon.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget _buildInfoRow(IconData icon, String label, String value) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 10),
+  //     child: Row(
+  //       children: [
+  //         Icon(icon, color: bgcolor, size: 24),
+  //         SizedBox(width: 16),
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 label,
+  //                 style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontFamily: 'Manrope',
+  //                   fontSize: 14,
+  //                   color: bgcolor.withOpacity(0.8),
+  //                 ),
+  //               ),
+  //               Text(
+  //                 value,
+  //                 style: TextStyle(
+  //                   fontFamily: 'Manrope',
+  //                   fontSize: 16,
+  //                   color: bgcolor,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  String _formatDate(String dateString) {
+    final date = DateTime.parse(dateString);
+    return "${date.day} ${_getMonthName(date.month)} ${date.year}";
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    return months[month - 1];
+  }
+}
+
+class LoadingWidget extends StatefulWidget {
+  @override
+  _LoadingWidgetState createState() => _LoadingWidgetState();
+}
+
+class _LoadingWidgetState extends State<LoadingWidget> {
+  bool _showConnectivityWarning = false;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 5), () {
+      setState(() {
+        _showConnectivityWarning = true;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: bgcolor,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(color: whitee),
+            const SizedBox(height: 20),
+            Text(
+              _showConnectivityWarning
+                  ? "Yo check yo wifi"
+                  : "Listening to the stars...",
+              style: const TextStyle(
+                color: whitee,
+                fontSize: 18,
+                fontFamily: 'Manrope',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

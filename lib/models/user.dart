@@ -10,7 +10,7 @@ class userModel {
   final String gender;
   final String chatRoomId;
   String handle;
-  final int phoneNumber;
+  final String phoneNumber;
   bool notificationsEnabled;
   String? fcmToken;
 
@@ -74,7 +74,7 @@ class userModel {
     String? gender,
     String? chatRoomId,
     String? handle,
-    int? phoneNumber,
+    String? phoneNumber,
     bool? notificationsEnabled,
     String? fcmToken,
   }) {

@@ -15,249 +15,169 @@ class PersonalPage extends StatefulWidget {
 }
 
 class _PersonalPageState extends State<PersonalPage> {
-  int _selectedTab = 1; // Default to 'Map'
+  int _selectedTab = 1; // Default to 'Today'
+  bool _isLoading = false;
+
+  Future<void> _refreshData(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Provider.of<UserDataProvider>(context, listen: false)
+          .refreshUserData();
+    } catch (e) {
+      _showErrorDialog('Failed to refresh data: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userDataProvider = Provider.of<UserDataProvider>(context);
-    final userData = userDataProvider.userData;
-
-    if (userData == null) {
-      return const Scaffold(
-        backgroundColor: bgcolor,
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       backgroundColor: bgcolor,
       body: SafeArea(
-        child: Column(
-          children: [
-            GreetingWidget(
-              userName: userData.user.name,
-              userData: userData,
-            ),
-            // SizedBox(height: MediaQuery.of(context).size.height * 0.021),
-            const SizedBox(height: 16),
-            // UserProfileHeader(userData: userData),
-            CustomSlidingSegmentedControl<int>(
-              initialValue: _selectedTab,
-              innerPadding: const EdgeInsets.all(5),
-              children: const {
-                1: Text(
-                  'Today',
-                  style: TextStyle(
-                    color: yelloww,
-                    fontFamily: 'Playwrite_HU',
-                  ),
-                ),
-                2: Text(
-                  'Chart',
-                  style: TextStyle(
-                    color: yelloww,
-                    fontFamily: 'Playwrite_HU',
-                  ),
-                ),
-                3: Text(
-                  'Signs',
-                  style: TextStyle(
-                    color: yelloww,
-                    fontFamily: 'Playwrite_HU',
-                  ),
-                ),
-              },
-              decoration: BoxDecoration(
-                color: tile_color,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              thumbDecoration: BoxDecoration(
-                color: bgcolor,
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(.3),
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                    offset: const Offset(
-                      0.0,
-                      2.0,
-                    ),
-                  ),
-                ],
-              ),
-              duration: const Duration(milliseconds: 50),
-              curve: Curves.easeInToLinear,
-              onValueChanged: (v) {
-                setState(() {
-                  _selectedTab = v;
-                });
-              },
-            ),
-            Expanded(
-              child: _buildSelectedTabContent(userData),
-            ),
-          ],
+        child: RefreshIndicator(
+          onRefresh: () => _refreshData(context),
+          child: Consumer<UserDataProvider>(
+            builder: (context, userDataProvider, child) {
+              final userData = userDataProvider.userData;
+
+              if (userData == null) {
+                return _buildLoadingOrError();
+              }
+
+              return _buildContent(userData);
+            },
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildLoadingOrError() {
+    return Center(
+      child: _isLoading
+          ? const CircularProgressIndicator(color: yelloww)
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: yelloww),
+                const SizedBox(height: 16),
+                const Text(
+                  'Failed to load user data',
+                  style: TextStyle(color: yelloww, fontSize: 18),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => _refreshData(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: tile_color,
+                  ),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildContent(UserAndAstroData userData) {
+    return Column(
+      children: [
+        GreetingWidget(
+          userName: userData.user.name,
+          userData: userData,
+        ),
+        const SizedBox(height: 16),
+        _buildSegmentedControl(),
+        Expanded(
+          child: Center(
+            child: _buildSelectedTabContent(userData),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSegmentedControl() {
+    return CustomSlidingSegmentedControl<int>(
+      initialValue: _selectedTab,
+      innerPadding: const EdgeInsets.all(5),
+      children: const {
+        1: Text('Today',
+            style: TextStyle(color: yelloww, fontFamily: 'Playwrite_HU')),
+        2: Text('Signs',
+            style: TextStyle(color: yelloww, fontFamily: 'Playwrite_HU')),
+        // 3: Text('Chart',
+        //     style: TextStyle(color: yelloww, fontFamily: 'Playwrite_HU')),
+      },
+      decoration: BoxDecoration(
+        color: tile_color,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      thumbDecoration: BoxDecoration(
+        color: bgcolor,
+        borderRadius: BorderRadius.circular(6),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.3),
+            blurRadius: 4.0,
+            spreadRadius: 1.0,
+            offset: const Offset(0.0, 2.0),
+          ),
+        ],
+      ),
+      duration: const Duration(milliseconds: 50),
+      curve: Curves.easeInToLinear,
+      onValueChanged: (v) {
+        setState(() {
+          _selectedTab = v;
+        });
+      },
+    );
+  }
+
   Widget _buildSelectedTabContent(UserAndAstroData userData) {
+    // Implement this method based on your existing logic
     switch (_selectedTab) {
       case 1:
-        return _buildToday(userData);
+        return TodayTab(userData: userData);
       case 2:
-        return _buildChart(userData);
+        return SignsTab(userData: userData);
       case 3:
-        return _buildSigns(userData);
+        return ChartTab(userData: userData);
+
       default:
-        return Container(); // This should never happen
+        return Container(); // or some default widget
     }
   }
+}
 
-  Widget _buildSigns(UserAndAstroData userData) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Text(
-          "Your Planetary Positions",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whitee,
-            fontFamily: 'Manrope',
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 24),
-        Table(
-          border: TableBorder.all(color: whitee.withOpacity(0.3)),
-          children: [
-            TableRow(
-              decoration: BoxDecoration(color: yelloww.withOpacity(0.1)),
-              children: ["Planet", "Sign", "Symbol"]
-                  .map((text) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: whitee,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ))
-                  .toList(),
-            ),
-            ...userData.astroData.planetSigns.entries.map((entry) {
-              return TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      entry.key,
-                      style: TextStyle(color: whitee),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      entry.value,
-                      style: TextStyle(color: whitee),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ColorFiltered(
-                      colorFilter:
-                          const ColorFilter.mode(yelloww, BlendMode.srcIn),
-                      child: Image.asset(
-                        'assets/icons/${entry.value.toLowerCase()}-icon.png',
-                        width: 30,
-                        height: 30,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
-          ],
-        ),
-      ],
-    );
-  }
+class TodayTab extends StatelessWidget {
+  final UserAndAstroData userData;
 
-  Widget _buildChart(UserAndAstroData userData) {
-    // Format the birthday to include date and time
-    String formattedBirthday = DateFormat('MMMM d, yyyy \'at\' h:mm a')
-        .format(DateTime.parse(userData.user.dateOfBirth));
+  const TodayTab({Key? key, required this.userData}) : super(key: key);
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Text(
-          "Your Birth Chart",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: whitee,
-            fontFamily: 'Manrope',
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 24),
-        // Text(
-        //   "Born on",
-        //   style: TextStyle(
-        //     fontSize: 18,
-        //     color: whitee,
-        //     fontFamily: 'Manrope',
-        //   ),
-        //   textAlign: TextAlign.center,
-        // ),
-        // SizedBox(height: 8),
-        Text(
-          formattedBirthday,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: yelloww,
-            fontFamily: 'Manrope',
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // SizedBox(height: 16),
-        Text(
-          "${userData.user.placeOfBirth}",
-          style: TextStyle(
-            fontSize: 18,
-            color: whitee,
-            fontFamily: 'Manrope',
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-        // Placeholder for the birth chart image
-        Text(
-          "Birth Chart Placeholder",
-          style: TextStyle(
-            fontSize: 18,
-            color: whitee,
-            fontFamily: 'Manrope',
-          ),
-          textAlign: TextAlign.center,
-        ),
-        // You would replace this with an actual image of the birth chart
-        // Image.asset('assets/birthchart.png'),
-      ],
-    );
-  }
-
-  Widget _buildToday(UserAndAstroData userData) {
+  @override
+  Widget build(BuildContext context) {
     String today = DateFormat('MMMM d, yyyy').format(DateTime.now());
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -265,7 +185,7 @@ class _PersonalPageState extends State<PersonalPage> {
         UserProfileHeader(userData: userData),
         Text(
           "Today, $today",
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 22,
             color: whitee,
           ),
@@ -274,7 +194,7 @@ class _PersonalPageState extends State<PersonalPage> {
         const SizedBox(height: 16),
         Text(
           userData.astroData.dailyHoroscope,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             color: whitee,
             fontFamily: 'Manrope',
@@ -282,7 +202,7 @@ class _PersonalPageState extends State<PersonalPage> {
           textAlign: TextAlign.left,
         ),
         const SizedBox(height: 24),
-        Text(
+        const Text(
           "Detailed Reading",
           style: TextStyle(
             fontSize: 20,
@@ -296,13 +216,146 @@ class _PersonalPageState extends State<PersonalPage> {
         Text(
           userData.astroData.detailedReading,
           textAlign: TextAlign.left,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             color: whitee,
             fontFamily: 'Manrope',
           ),
         ),
         const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+class ChartTab extends StatelessWidget {
+  final UserAndAstroData userData;
+
+  const ChartTab({Key? key, required this.userData}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedBirthday = DateFormat('MMMM d, yyyy \'at\' h:mm a')
+        .format(DateTime.parse(userData.user.dateOfBirth));
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text(
+          "Your Birth Chart",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: whitee,
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 24),
+        Text(
+          formattedBirthday,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: yelloww,
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          userData.user.placeOfBirth,
+          style: const TextStyle(
+            fontSize: 18,
+            color: whitee,
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 32),
+        const Text(
+          "Birth Chart Placeholder",
+          style: TextStyle(
+            fontSize: 18,
+            color: whitee,
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        // TODO: Replace with actual birth chart image
+        // Image.asset('assets/birthchart.png'),
+      ],
+    );
+  }
+}
+
+class SignsTab extends StatelessWidget {
+  final UserAndAstroData userData;
+
+  const SignsTab({Key? key, required this.userData}) : super(key: key);
+
+  String formatPlanetName(String name) {
+    return name.replaceAll('_', ' ').toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Text(
+          "Your Planetary Positions",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            // color: whitee,
+            color: Colors.grey[300],
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 24),
+        Table(
+          children: userData.astroData.planetSigns.entries.map((entry) {
+            return TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    formatPlanetName(entry.key),
+                    style: const TextStyle(
+                      color: whitee,
+                      fontFamily: 'Manrope',
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ColorFiltered(
+                    colorFilter:
+                        const ColorFilter.mode(yelloww, BlendMode.srcIn),
+                    child: Image.asset(
+                      'assets/icons/${entry.value.toLowerCase()}-icon.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    entry.value.toUpperCase(),
+                    style: const TextStyle(
+                      color: whitee,
+                      fontFamily: 'Manrope',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
+        ),
       ],
     );
   }

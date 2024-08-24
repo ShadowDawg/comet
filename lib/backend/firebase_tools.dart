@@ -5,7 +5,9 @@ import 'dart:convert';
 
 import '../models/user_and_astro_data.dart'; // For encoding the request body
 
-const apiUrl = 'http://10.0.2.2:8000';
+// const apiUrl = 'http://10.0.2.2:8000'; // emulator
+// const apiUrl = 'http://192.168.18.1:8000'; // connected device
+const apiUrl = "https://comet-api.vercel.app"; // first live deployment
 
 Future<UserAndAstroData> backendFirebaseCreateNewUser(
     Map<String, dynamic> userData) async {
