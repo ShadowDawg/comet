@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
 // import 'package:test1/pages/horoscope_widgets.dart';
 import 'package:test1/pages/personal_page_widgets.dart';
+import 'package:test1/pages/settings_page.dart';
 import 'package:test1/providers/user_data_provider.dart';
 import '../models/user_and_astro_data.dart';
 import 'package:intl/intl.dart';
@@ -60,10 +63,86 @@ class _PersonalPageState extends State<PersonalPage> {
     );
   }
 
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: const SettingsPage(),
+        ),
+      );
+    } catch (e) {
+      print('Error during logout: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to log out. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgcolor,
+      appBar: AppBar(
+        toolbarHeight: kToolbarHeight + MediaQuery.of(context).padding.top,
+        automaticallyImplyLeading: false,
+        backgroundColor: bgcolor,
+        flexibleSpace: SafeArea(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              double height = kToolbarHeight * 1.4;
+              double fontSize = height * 0.4;
+
+              return Container(
+                height: height,
+                padding: EdgeInsets.symmetric(
+                  horizontal: constraints.maxWidth * 0.05,
+                  vertical: height * 0.1,
+                ),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Color(0xFFC0C0BE),
+                    ),
+                  ),
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Center(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'you.',
+                          style: TextStyle(
+                            fontFamily: 'Playwrite_HU',
+                            fontSize: fontSize,
+                            color: yelloww,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: yelloww,
+                          size: fontSize,
+                        ),
+                        onPressed: () => _logout(context),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => _refreshData(context),
@@ -112,11 +191,8 @@ class _PersonalPageState extends State<PersonalPage> {
   Widget _buildContent(UserAndAstroData userData) {
     return Column(
       children: [
-        GreetingWidget(
-          userName: userData.user.name,
-          userData: userData,
-        ),
-        const SizedBox(height: 16),
+        // GreetingWidget(),
+        //const SizedBox(height: 16),
         _buildSegmentedControl(),
         Expanded(
           child: Center(

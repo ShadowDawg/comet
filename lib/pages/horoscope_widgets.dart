@@ -55,7 +55,8 @@ class HoroscopeCard extends StatelessWidget {
       ),
       color: bgcolor,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        // padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -85,58 +86,6 @@ class HoroscopeCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class GreetingWidget extends StatelessWidget {
-  final String userName;
-
-  const GreetingWidget({
-    Key? key,
-    required this.userName,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        // Use a default height if the constraint is undefined
-        double height = constraints.maxHeight.isFinite
-            ? constraints.maxHeight
-            : MediaQuery.of(context).size.height * 0.1;
-
-        double fontSize = height * 0.4; // Adjust this factor as needed
-
-        return Container(
-          height: height,
-          padding: EdgeInsets.symmetric(
-            vertical: height * 0.1,
-            horizontal: constraints.maxWidth * 0.05,
-          ),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Color(0xFFC0C0BE),
-              ),
-            ),
-          ),
-          child: Center(
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Text(
-                'comet.',
-                style: TextStyle(
-                  fontFamily: 'Playwrite_HU',
-                  fontSize: fontSize,
-                  color: yelloww,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

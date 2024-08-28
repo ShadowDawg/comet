@@ -43,6 +43,51 @@ class _HoroscopePageState extends State<HoroscopePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgcolor,
+      appBar: AppBar(
+        toolbarHeight: kToolbarHeight + MediaQuery.of(context).padding.top,
+        automaticallyImplyLeading: false,
+        backgroundColor: bgcolor,
+        flexibleSpace: SafeArea(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              // double height = constraints.maxHeight.isFinite
+              //     ? constraints.maxHeight
+              //     : MediaQuery.of(context).size.height * 0.1;
+              double height = kToolbarHeight * 1.4;
+              double fontSize = height * 0.4;
+
+              return Container(
+                height: height,
+                padding: EdgeInsets.symmetric(
+                  horizontal: constraints.maxWidth * 0.05,
+                  vertical: height * 0.1,
+                ),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Color(0xFFC0C0BE),
+                    ),
+                  ),
+                ),
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      'comet.',
+                      style: TextStyle(
+                        fontFamily: 'Playwrite_HU',
+                        fontSize: fontSize,
+                        color: yelloww, // Ensure this color is defined
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refreshData,
@@ -140,8 +185,8 @@ class _HoroscopePageState extends State<HoroscopePage> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: <Widget>[
-              GreetingWidget(userName: userData.user.name),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              // GreetingWidget(userName: userData.user.name),
+              // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: HoroscopeCard(
