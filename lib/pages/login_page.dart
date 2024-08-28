@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
           .setUserData(userData);
 
       // Navigate based on notification settings
-      if (!userData.user.notificationsEnabled) {
+      if (!userData.user.notificationsEnabled || true) {
         Navigator.pushReplacement(
           context,
           PageTransition(

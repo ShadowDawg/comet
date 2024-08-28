@@ -72,6 +72,18 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                   fontFamily: 'Manrope',
                 ),
               ),
+              const SizedBox(
+                  height: 8), // Add some space between title and subtitle
+              const Text(
+                'We\'ll remember to wish you happy bday :)',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors
+                      .white54, // Using yellow for contrast, adjust as needed
+                  fontFamily: 'Manrope',
+                  // fontStyle: FontStyle.italic,
+                ),
+              ),
               const SizedBox(height: 20),
               Expanded(
                 child: Center(

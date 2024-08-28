@@ -66,7 +66,7 @@ class LoginNotificationPermissionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tile_color,
+      backgroundColor: yelloww,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -82,24 +82,28 @@ class LoginNotificationPermissionPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(Icons.notifications_active, size: 80, color: offwhite),
+              const Icon(
+                Icons.notifications_active,
+                size: 80,
+                color: bgcolor,
+              ),
               const SizedBox(height: 24),
               const Text(
-                "Bring the stars down to your phone.",
+                "InstiSpace never saw this coming.",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: offwhite,
+                  color: bgcolor,
                   fontFamily: 'Playwrite_HU',
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               const Text(
-                "Enable notifications to get timely updates about your horoscope and potential matches. Pinky promise we don't spam.",
+                "Get notified about your daily horoscopes and when your match slides into your dm's. Pinky promise we don't spam.",
                 style: TextStyle(
                   fontSize: 16,
-                  color: offwhite,
+                  color: bgcolor,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -111,7 +115,14 @@ class LoginNotificationPermissionPage extends StatelessWidget {
                   foregroundColor: offwhite,
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                child: const Text("Enable Notifications"),
+                child: const Text(
+                  "Enable Notifications",
+                  style: TextStyle(
+                    color: yelloww,
+                    fontFamily: "Manrope",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -130,7 +141,8 @@ class LoginNotificationPermissionPage extends StatelessWidget {
                 child: const Text(
                   "Not Now",
                   style: TextStyle(
-                    color: offwhite,
+                    color: bgcolor,
+                    fontFamily: "Manrope",
                   ),
                 ),
               ),

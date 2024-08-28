@@ -133,6 +133,18 @@ class _BirthplaceInputPageState extends State<BirthplaceInputPage> {
                   fontFamily: 'Manrope',
                 ),
               ),
+              const SizedBox(
+                  height: 8), // Add some space between title and subtitle
+              const Text(
+                'Yeah this too lmao',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors
+                      .white54, // Using yellow for contrast, adjust as needed
+                  fontFamily: 'Manrope',
+                  // fontStyle: FontStyle.italic,
+                ),
+              ),
               const SizedBox(height: 20),
               GooglePlaceAutoCompleteTextField(
                 focusNode: _focusNode,

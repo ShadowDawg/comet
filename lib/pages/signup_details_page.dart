@@ -270,13 +270,17 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Hello ${widget.zodiacSign}!',
+                  'Hello ${widget.zodiacSign}',
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: yelloww,
-                    fontFamily: 'Manrope',
+                    // fontFamily: 'Manrope',
+                    fontFamily: 'Playwrite_HU',
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 const Text(
                   'Complete Your Profile',
@@ -296,7 +300,7 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
                   const Padding(
                     padding: EdgeInsets.only(top: 8.0),
                     child: Text(
-                      'Profile picture is required',
+                      'A pfp is required. Feel free to flex your game.',
                       style: TextStyle(
                           color: Colors.red,
                           fontSize: 15,

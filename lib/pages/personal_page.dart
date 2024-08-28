@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
+// import 'package:test1/pages/horoscope_widgets.dart';
 import 'package:test1/pages/personal_page_widgets.dart';
 import 'package:test1/providers/user_data_provider.dart';
 import '../models/user_and_astro_data.dart';
 import 'package:intl/intl.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
+
+String capitalizeEveryWord(String text) {
+  if (text.isEmpty) return text;
+
+  return text.split(' ').map((word) {
+    if (word.isEmpty) return word;
+    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }).join(' ');
+}
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({Key? key}) : super(key: key);
@@ -297,18 +307,60 @@ class SignsTab extends StatelessWidget {
     return name.replaceAll('_', ' ').toUpperCase();
   }
 
+  String formatBirthday(String isoString) {
+    DateTime birthday = DateTime.parse(isoString);
+    return DateFormat('MMMM d, yyyy').format(birthday);
+  }
+
+  String getSubtitle(String isoString) {
+    DateTime birthday = DateTime.parse(isoString);
+    if (birthday.month % 2 == 0) {
+      return "ngl your signs say you're cooked";
+    } else {
+      return "Your stars are aligned for greatness!";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Format the birthday
+    String formattedBirthday = formatBirthday(userData.user.dateOfBirth);
+    String subtitle = getSubtitle(userData.user.dateOfBirth);
+    String name = capitalizeEveryWord(
+      userData.user.name,
+    );
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          "Your Planetary Positions",
+          name,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[300],
+            fontFamily: 'Playwrite_HU',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        // const SizedBox(height: 8),
+        Text(
+          formattedBirthday,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            // color: whitee,
             color: Colors.grey[300],
+            fontFamily: 'Manrope',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 16,
+            // fontStyle: FontStyle.italic,
+            color: Colors.grey[400],
             fontFamily: 'Manrope',
           ),
           textAlign: TextAlign.center,

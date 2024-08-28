@@ -148,7 +148,7 @@ class _NotificationPermissionPageState
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    "Enable notifications to get timely updates. Pinky promise we don't spam!",
+                    "Enable notifications to get timely updates. Pinky promise we're much more fun than InstiSpace.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: greyy,

@@ -297,7 +297,7 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
                   //   textAlign: TextAlign.center,
                   // ),
                   child: Text(
-                    'Listening to the stars...',
+                    'The stars are cooking...',
                     style: TextStyle(
                       color: greyy,
                       fontSize: 16,

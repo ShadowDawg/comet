@@ -87,6 +87,18 @@ class _BirthTimeInputPageState extends State<BirthTimeInputPage> {
                   fontFamily: 'Manrope',
                 ),
               ),
+              const SizedBox(
+                  height: 8), // Add some space between title and subtitle
+              const Text(
+                'Yup the stars need this to find your match',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors
+                      .white54, // Using yellow for contrast, adjust as needed
+                  fontFamily: 'Manrope',
+                  // fontStyle: FontStyle.italic,
+                ),
+              ),
               const SizedBox(height: 20),
               Expanded(
                 child: Center(

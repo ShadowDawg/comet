@@ -238,7 +238,7 @@ class _SettingsPageState extends State<SettingsPage> {
             )
           : null,
       onTap: field == 'Birth Place' ? () => _editBirthplace(value) : onTap,
-      tileColor: tile_color,
+      tileColor: darkGreyy,
       textColor: yelloww,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -273,7 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       subtitle: Text(value),
-      tileColor: tile_color,
+      tileColor: darkGreyy,
       textColor: yelloww,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
