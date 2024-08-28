@@ -122,7 +122,7 @@ class UserProfileHeader extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: tile_color,
+        color: darkGreyy,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

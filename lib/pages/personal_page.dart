@@ -140,7 +140,7 @@ class _PersonalPageState extends State<PersonalPage> {
         //     style: TextStyle(color: yelloww, fontFamily: 'Playwrite_HU')),
       },
       decoration: BoxDecoration(
-        color: tile_color,
+        color: darkGreyy,
         borderRadius: BorderRadius.circular(8),
       ),
       thumbDecoration: BoxDecoration(
@@ -196,8 +196,9 @@ class TodayTab extends StatelessWidget {
         Text(
           "Today, $today",
           style: const TextStyle(
-            fontSize: 22,
-            color: whitee,
+            fontSize: 19,
+            color: greyy,
+            fontFamily: 'Manrope',
           ),
           textAlign: TextAlign.center,
         ),
@@ -209,23 +210,23 @@ class TodayTab extends StatelessWidget {
             color: whitee,
             fontFamily: 'Manrope',
           ),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 24),
         const Text(
-          "Detailed Reading",
+          "Deep Dive",
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: whitee,
+            color: greyy,
             fontFamily: 'Manrope',
           ),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           userData.astroData.detailedReading,
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 16,
             color: whitee,

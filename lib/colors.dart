@@ -18,4 +18,5 @@ const offwhite = Color((0xFFF2F1EA)); // OG
 
 const greyy = Colors.grey;
 
-const darkGreyy = Color(0x1AFFFFFF);
+// const darkGreyy = Color(0x1AFFFFFF); // base with opacity
+const darkGreyy = Color(0xFF1c1c1c); // actual color
