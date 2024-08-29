@@ -5,16 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/initializer_widget.dart';
-import 'package:test1/pages/google_signup_page.dart';
+import 'package:test1/models/user.dart';
+import 'package:test1/pages/signup/google_signup_page6.dart';
 import 'package:test1/providers/user_data_provider.dart';
 import 'package:test1/utils/validators.dart';
-import '../models/user_and_astro_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -64,9 +63,11 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        setState(() {
-          _image = File(pickedFile.path);
-        });
+        if (mounted) {
+          setState(() {
+            _image = File(pickedFile.path);
+          });
+        }
       }
     } catch (e) {
       _showErrorDialog('Failed to pick image: $e');
@@ -109,9 +110,11 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
         ),
       );
     } else {
-      setState(() {
-        _isFormSubmitted = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isFormSubmitted = true;
+        });
+      }
       // _showErrorDialog(
       //     'Please fill in all fields and select a profile picture.');
     }
@@ -167,7 +170,7 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
             }
           }
 
-          UserAndAstroData newUser =
+          UserModel newUser =
               await backendFirebaseCreateNewUser(userData).timeout(
             const Duration(seconds: 30),
             onTimeout: () {
@@ -184,7 +187,7 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
             FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
               FirebaseFirestore.instance
                   .collection('users')
-                  .doc(newUser.user.uid)
+                  .doc(newUser.uid)
                   .update({'fcmToken': token});
             });
           }
@@ -402,8 +405,11 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
                   icon: Icon(_obscurePassword
                       ? Icons.visibility_off
                       : Icons.visibility),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
+                  onPressed: () {
+                    if (mounted) {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    }
+                  },
                 )
               : null,
         ),
@@ -456,7 +462,11 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
           ),
         );
       }).toList(),
-      onChanged: (newValue) => setState(() => _selectedGender = newValue),
+      onChanged: (newValue) {
+        if (mounted) {
+          setState(() => _selectedGender = newValue);
+        }
+      },
       validator: (value) => value == null ? 'Please select a gender' : null,
     );
   }

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/initializer_widget.dart';
-import 'package:test1/pages/settings_edit_birth_place.dart';
+import 'package:test1/pages/personal/settings/settings_edit_birth_place.dart';
 import 'package:test1/providers/user_data_provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -30,17 +30,18 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     final userDataProvider =
         Provider.of<UserDataProvider>(context, listen: false);
-    _dateOfBirth = DateTime.parse(userDataProvider.userData!.user.dateOfBirth);
+    _dateOfBirth = DateTime.parse(userDataProvider.userData!.dateOfBirth);
   }
 
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+        }
+      });
+    }
   }
 
   Future<String> uploadImage(File image) async {
@@ -54,9 +55,11 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _updateField(String field, dynamic value) async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final userDataProvider =
@@ -69,30 +72,26 @@ class _SettingsPageState extends State<SettingsPage> {
       }
 
       bool updateSuccess =
-          await backendFirebaseUpdateUserField(userData.user.uid, field, value);
+          await backendFirebaseUpdateUserField(userData.uid, field, value);
 
       if (updateSuccess) {
         // Update successful, update local state through the provider
         userDataProvider.updateUserData((currentData) {
           switch (field) {
             case 'handle':
-              return currentData.copyWith(
-                  user: currentData.user.copyWith(handle: value));
+              return currentData.copyWith(handle: value);
             case 'dateOfBirth':
-              return currentData.copyWith(
-                  user: currentData.user.copyWith(dateOfBirth: value));
+              return currentData.copyWith(dateOfBirth: value);
             case 'placeOfBirth':
-              return currentData.copyWith(
-                  user: currentData.user.copyWith(placeOfBirth: value));
+              return currentData.copyWith(placeOfBirth: value);
             case 'photoUrl':
-              return currentData.copyWith(
-                  user: currentData.user.copyWith(photoUrl: value));
+              return currentData.copyWith(photoUrl: value);
             default:
               return currentData;
           }
         });
 
-        if (field == 'dateOfBirth') {
+        if (field == 'dateOfBirth' && mounted) {
           setState(() {
             _dateOfBirth = DateTime.parse(value);
           });
@@ -112,9 +111,11 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -207,7 +208,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               onPressed: () {
-                if (tempDateTime != null && tempDateTime != _dateOfBirth) {
+                if (tempDateTime != null &&
+                    tempDateTime != _dateOfBirth &&
+                    mounted) {
                   setState(() {
                     _dateOfBirth = tempDateTime!;
                   });
@@ -257,10 +260,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (result != null) {
       // Update the birthplace in your state or database
-      setState(() {
-        // Assuming you have a variable to store the birthplace
-        _updateField("placeOfBirth", result);
-      });
+      if (mounted) {
+        setState(() {
+          // Assuming you have a variable to store the birthplace
+          _updateField("placeOfBirth", result);
+        });
+      }
     }
   }
 
@@ -284,15 +289,36 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to log out?'),
+          title: const Text(
+            'Logout',
+            style: TextStyle(
+              color: yelloww,
+            ),
+          ),
+          backgroundColor: darkGreyy,
+          content: const Text(
+            'Are you sure you want to log out?',
+            style: TextStyle(
+              color: offwhite,
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             TextButton(
-              child: const Text('Logout'),
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
               onPressed: () => Navigator.of(context).pop(true),
             ),
           ],
@@ -374,7 +400,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (confirmDelete == true) {
       try {
-        await backendFirebaseDeleteUserAccount(userData.user.uid);
+        await backendFirebaseDeleteUserAccount(userData.uid);
         await FirebaseAuth.instance.currentUser?.delete();
         await FirebaseAuth.instance.signOut();
 
@@ -445,35 +471,33 @@ class _SettingsPageState extends State<SettingsPage> {
                         backgroundColor: Colors.grey[200],
                         backgroundImage: _image != null
                             ? FileImage(_image!)
-                            : (userData.user.photoUrl.isNotEmpty
-                                ? NetworkImage(userData.user.photoUrl)
+                            : (userData.photoUrl.isNotEmpty
+                                ? NetworkImage(userData.photoUrl)
                                 : null) as ImageProvider?,
-                        child:
-                            (_image == null && (userData.user.photoUrl.isEmpty))
-                                ? Icon(Icons.camera_alt,
-                                    size: 50, color: Colors.grey[800])
-                                : null,
+                        child: (_image == null && (userData.photoUrl.isEmpty))
+                            ? Icon(Icons.camera_alt,
+                                size: 50, color: Colors.grey[800])
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 20),
                     // Non-editable fields
-                    _buildNonEditableRow('Name', userData.user.name),
+                    _buildNonEditableRow('Name', userData.name),
                     const SizedBox(
                       height: 5,
                     ),
-                    _buildNonEditableRow('Gender', userData.user.gender),
+                    _buildNonEditableRow('Gender', userData.gender),
                     const SizedBox(
                       height: 5,
                     ),
                     _buildNonEditableRow(
-                        'Phone', userData.user.phoneNumber.toString()),
+                        'Phone', userData.phoneNumber.toString()),
                     const Divider(),
                     // Editable fields
                     _buildSettingRow(
                       'Username',
-                      "@${userData.user.handle}",
-                      onTap: () =>
-                          _showEditDialog('handle', userData.user.handle),
+                      "@${userData.handle}",
+                      onTap: () => _showEditDialog('handle', userData.handle),
                     ),
                     const SizedBox(
                       height: 5,
@@ -496,9 +520,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _buildSettingRow(
                       'Birth Place',
-                      userData.user.placeOfBirth,
+                      userData.placeOfBirth,
                       onTap: () => _showEditDialog(
-                          'placeOfBirth', userData.user.placeOfBirth),
+                          'placeOfBirth', userData.placeOfBirth),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(

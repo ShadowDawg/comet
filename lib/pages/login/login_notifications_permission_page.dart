@@ -36,16 +36,17 @@ class LoginNotificationPermissionPage extends StatelessWidget {
       String? token = await messaging.getToken();
       if (token != null) {
         bool updated = await backendFirebaseUpdateUserNotificationPermission(
-          userId: userData.user.uid,
+          userId: userData.uid,
           fcmToken: token,
         );
         if (updated) {
           // Update the user data in the provider
-          userDataProvider.updateUserData((currentData) => currentData.copyWith(
-                  user: currentData.user.copyWith(
-                notificationsEnabled: true,
-                fcmToken: token,
-              )));
+          userDataProvider.updateUserData(
+            (currentData) => currentData.copyWith(
+              notificationsEnabled: true,
+              fcmToken: token,
+            ),
+          );
         } else {
           // Handle update failure (e.g., show an error message)
           print('Failed to update notification settings');
@@ -58,7 +59,7 @@ class LoginNotificationPermissionPage extends StatelessWidget {
       context,
       PageTransition(
         type: PageTransitionType.fade,
-        child: NavigationHome(),
+        child: const NavigationHome(),
       ),
     );
   }
@@ -131,7 +132,7 @@ class LoginNotificationPermissionPage extends StatelessWidget {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: NavigationHome(),
+                      child: const NavigationHome(),
                     ),
                   );
                 },

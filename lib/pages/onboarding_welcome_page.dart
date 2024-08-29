@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:test1/colors.dart';
-import 'package:test1/pages/login_page.dart';
+import 'package:test1/pages/login/login_page.dart';
 import 'package:test1/pages/signup/birthday_input_page1.dart';
 
 class OnboardingWelcomePage extends StatelessWidget {

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
+import 'package:test1/models/user.dart';
 // import 'package:test1/pages/horoscope_widgets.dart';
-import 'package:test1/pages/personal_page_widgets.dart';
-import 'package:test1/pages/settings_page.dart';
+import 'package:test1/pages/personal/personal_page_widgets.dart';
+import 'package:test1/pages/personal/settings/settings_page.dart';
 import 'package:test1/providers/user_data_provider.dart';
-import '../models/user_and_astro_data.dart';
 import 'package:intl/intl.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 
@@ -32,18 +32,22 @@ class _PersonalPageState extends State<PersonalPage> {
   bool _isLoading = false;
 
   Future<void> _refreshData(BuildContext context) async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
     try {
       await Provider.of<UserDataProvider>(context, listen: false)
           .refreshUserData();
     } catch (e) {
       _showErrorDialog('Failed to refresh data: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -66,13 +70,15 @@ class _PersonalPageState extends State<PersonalPage> {
   Future<void> _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.rightToLeft,
-          child: const SettingsPage(),
-        ),
-      );
+      if (mounted) {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: const SettingsPage(),
+          ),
+        );
+      }
     } catch (e) {
       print('Error during logout: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -188,7 +194,7 @@ class _PersonalPageState extends State<PersonalPage> {
     );
   }
 
-  Widget _buildContent(UserAndAstroData userData) {
+  Widget _buildContent(UserModel userData) {
     return Column(
       children: [
         // GreetingWidget(),
@@ -234,14 +240,16 @@ class _PersonalPageState extends State<PersonalPage> {
       duration: const Duration(milliseconds: 50),
       curve: Curves.easeInToLinear,
       onValueChanged: (v) {
-        setState(() {
-          _selectedTab = v;
-        });
+        if (mounted) {
+          setState(() {
+            _selectedTab = v;
+          });
+        }
       },
     );
   }
 
-  Widget _buildSelectedTabContent(UserAndAstroData userData) {
+  Widget _buildSelectedTabContent(UserModel userData) {
     // Implement this method based on your existing logic
     switch (_selectedTab) {
       case 1:
@@ -258,7 +266,7 @@ class _PersonalPageState extends State<PersonalPage> {
 }
 
 class TodayTab extends StatelessWidget {
-  final UserAndAstroData userData;
+  final UserModel userData;
 
   const TodayTab({Key? key, required this.userData}) : super(key: key);
 
@@ -276,17 +284,17 @@ class TodayTab extends StatelessWidget {
             color: greyy,
             fontFamily: 'Manrope',
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
         ),
         const SizedBox(height: 16),
         Text(
           userData.astroData.dailyHoroscope,
           style: const TextStyle(
             fontSize: 20,
-            color: whitee,
+            color: offwhite,
             fontFamily: 'Manrope',
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
         ),
         const SizedBox(height: 24),
         const Text(
@@ -297,15 +305,15 @@ class TodayTab extends StatelessWidget {
             color: greyy,
             fontFamily: 'Manrope',
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
         ),
         const SizedBox(height: 8),
         Text(
           userData.astroData.detailedReading,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: const TextStyle(
             fontSize: 16,
-            color: whitee,
+            color: offwhite,
             fontFamily: 'Manrope',
           ),
         ),
@@ -316,14 +324,14 @@ class TodayTab extends StatelessWidget {
 }
 
 class ChartTab extends StatelessWidget {
-  final UserAndAstroData userData;
+  final UserModel userData;
 
   const ChartTab({Key? key, required this.userData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String formattedBirthday = DateFormat('MMMM d, yyyy \'at\' h:mm a')
-        .format(DateTime.parse(userData.user.dateOfBirth));
+        .format(DateTime.parse(userData.dateOfBirth));
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -350,7 +358,7 @@ class ChartTab extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         Text(
-          userData.user.placeOfBirth,
+          userData.placeOfBirth,
           style: const TextStyle(
             fontSize: 18,
             color: whitee,
@@ -376,7 +384,7 @@ class ChartTab extends StatelessWidget {
 }
 
 class SignsTab extends StatelessWidget {
-  final UserAndAstroData userData;
+  final UserModel userData;
 
   const SignsTab({Key? key, required this.userData}) : super(key: key);
 
@@ -401,10 +409,10 @@ class SignsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Format the birthday
-    String formattedBirthday = formatBirthday(userData.user.dateOfBirth);
-    String subtitle = getSubtitle(userData.user.dateOfBirth);
+    String formattedBirthday = formatBirthday(userData.dateOfBirth);
+    String subtitle = getSubtitle(userData.dateOfBirth);
     String name = capitalizeEveryWord(
-      userData.user.name,
+      userData.name,
     );
 
     return ListView(

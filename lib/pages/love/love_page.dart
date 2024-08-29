@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
-import 'package:test1/pages/chat_page.dart';
-import 'package:test1/pages/love_page_widgets.dart';
+import 'package:test1/models/user.dart';
+import 'package:test1/pages/love/chat/chat_page.dart';
+import 'package:test1/pages/love/love_page_widgets.dart';
 import 'package:test1/providers/user_data_provider.dart';
-import '../models/user_and_astro_data.dart'; // Ensur your UserModel correctly
+import '../../models/user_and_astro_data.dart'; // Ensur your UserModel correctly
 
 class LovePage extends StatefulWidget {
   const LovePage({Key? key}) : super(key: key);
@@ -21,18 +22,22 @@ class _LovePageState extends State<LovePage> {
   bool _isLoading = false;
 
   Future<void> _refreshData() async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
     try {
       await Provider.of<UserDataProvider>(context, listen: false)
           .refreshUserData();
     } catch (e) {
       _showErrorDialog('Failed to refresh data: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -52,10 +57,12 @@ class _LovePageState extends State<LovePage> {
     );
   }
 
-  void _startChatting(BuildContext context, UserAndAstroData userData) async {
-    setState(() {
-      _isLoading = true;
-    });
+  void _startChatting(BuildContext context, UserModel userData) async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
     try {
       // Update locally first
       final userDataProvider =
@@ -64,7 +71,7 @@ class _LovePageState extends State<LovePage> {
           astroData: currentData.astroData.copyWith(matchApproved: true)));
 
       // Then update on the server
-      await backendFirebaseUpdateMatchApproved(userData.user.uid, true);
+      await backendFirebaseUpdateMatchApproved(userData.uid, true);
 
       // Navigate to ChatPage
       Navigator.push(
@@ -76,9 +83,11 @@ class _LovePageState extends State<LovePage> {
     } catch (e) {
       _showErrorDialog('Failed to start chatting: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -206,8 +215,7 @@ class _LovePageState extends State<LovePage> {
     );
   }
 
-  Widget _buildContentBasedOnUser(
-      BuildContext context, UserAndAstroData userData) {
+  Widget _buildContentBasedOnUser(BuildContext context, UserModel userData) {
     if (userData.astroData.matchUid.isEmpty) {
       print("hmm");
       return const SafeArea(
@@ -225,8 +233,7 @@ class _LovePageState extends State<LovePage> {
     }
   }
 
-  Widget _buildMatchFoundContent(
-      BuildContext context, UserAndAstroData userData) {
+  Widget _buildMatchFoundContent(BuildContext context, UserModel userData) {
     return SafeArea(
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -250,9 +257,8 @@ class _LovePageState extends State<LovePage> {
                   ),
                 ),
               ),
-              FutureBuilder<UserAndAstroData>(
-                future: backendFirebaseGetUserAndAstroData(
-                    userData.astroData.matchUid),
+              FutureBuilder<UserModel>(
+                future: backendFirebaseGetUserData(userData.astroData.matchUid),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // return const CircularProgressIndicator(color: whitee);
@@ -262,7 +268,7 @@ class _LovePageState extends State<LovePage> {
                         "Error loading match details: ${snapshot.error}",
                         style: const TextStyle(color: whitee));
                   } else if (snapshot.hasData) {
-                    UserAndAstroData matchUser = snapshot.data!;
+                    UserModel matchUser = snapshot.data!;
                     return MatchCard(
                       userData: userData,
                       matchUser: matchUser,
@@ -295,9 +301,11 @@ class _LoadingWidgetState extends State<LoadingWidget> {
   void initState() {
     super.initState();
     _timer = Timer(const Duration(seconds: 5), () {
-      setState(() {
-        _showConnectivityWarning = true;
-      });
+      if (mounted) {
+        setState(() {
+          _showConnectivityWarning = true;
+        });
+      }
     });
   }
 
@@ -335,8 +343,8 @@ class _LoadingWidgetState extends State<LoadingWidget> {
 }
 
 class MatchCard extends StatelessWidget {
-  final UserAndAstroData userData;
-  final UserAndAstroData matchUser;
+  final UserModel userData;
+  final UserModel matchUser;
   final VoidCallback onStartChatting;
 
   const MatchCard({
@@ -446,18 +454,18 @@ class MatchCard extends StatelessWidget {
     );
   }
 
-  Widget _buildUserInfo(BuildContext context, UserAndAstroData user) {
+  Widget _buildUserInfo(BuildContext context, UserModel user) {
     return Expanded(
       child: Column(
         children: [
           Hero(
-            tag: 'avatar_${user.user.uid}',
+            tag: 'avatar_${user.uid}',
             child: CircleAvatar(
               radius: MediaQuery.of(context).size.width * 0.12,
               backgroundColor: Colors.white,
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: user.user.photoUrl,
+                  imageUrl: user.photoUrl,
                   placeholder: (context, url) =>
                       const CircularProgressIndicator(),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -470,7 +478,7 @@ class MatchCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            user.user.name,
+            user.name,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -480,7 +488,7 @@ class MatchCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Text(
-            "@${user.user.handle}",
+            "@${user.handle}",
             style: TextStyle(
               fontSize: 14,
               color: bgcolor.withOpacity(0.7),
@@ -507,7 +515,7 @@ class MatchCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            "Born in ${user.user.placeOfBirth}",
+            "Born in ${user.placeOfBirth}",
             style: TextStyle(
               fontSize: 12,
               color: bgcolor.withOpacity(0.8),

@@ -40,9 +40,11 @@ class _BirthplaceInputPageState extends State<BirthplaceInputPage> {
   }
 
   void _updateBirthplaceStatus() {
-    setState(() {
-      _isBirthplaceEntered = _birthplaceController.text.trim().isNotEmpty;
-    });
+    if (mounted) {
+      setState(() {
+        _isBirthplaceEntered = _birthplaceController.text.trim().isNotEmpty;
+      });
+    }
   }
 
   String calculateZodiacSign(DateTime birthday) {

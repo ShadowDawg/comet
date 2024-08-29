@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/initializer_widget.dart';
-import 'package:test1/models/user_and_astro_data.dart';
+import 'package:test1/models/user.dart';
 // import 'package:chatview/chatview.dart';
 // import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 // import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -21,7 +21,7 @@ String randomString() {
 }
 
 class ChatPage extends StatefulWidget {
-  final UserAndAstroData userData;
+  final UserModel userData;
 
   const ChatPage({Key? key, required this.userData}) : super(key: key);
 
@@ -30,7 +30,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late Future<UserAndAstroData> matchData;
+  late Future<UserModel> matchData;
 
   late DatabaseReference messagesRef;
 
@@ -77,10 +77,10 @@ class _ChatPageState extends State<ChatPage> {
 
     var editedReplyMessage = ReplyMessage(
       replyBy: (replyMessage.replyBy == '1')
-          ? widget.userData.user.uid
+          ? widget.userData.uid
           : widget.userData.astroData.matchUid,
       replyTo: (replyMessage.replyTo == '1')
-          ? widget.userData.user.uid
+          ? widget.userData.uid
           : widget.userData.astroData.matchUid,
       messageId: replyMessage.messageId,
       messageType: replyMessage.messageType,
@@ -97,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
       "id": DateTime.now().toString(),
       "message": message,
       "createdAt": DateTime.now().toString(),
-      "sendBy": widget.userData.user.uid,
+      "sendBy": widget.userData.uid,
       "replyMessage": editedReplyMessage.toFirebaseJson(),
       "messageType": messageType.toString(),
     };
@@ -129,8 +129,7 @@ class _ChatPageState extends State<ChatPage> {
                 id: "e.key",
                 message: e.value['message'],
                 createdAt: DateTime.parse(e.value['createdAt']),
-                sendBy:
-                    (e.value['sendBy'] == widget.userData.user.uid) ? '1' : '2',
+                sendBy: (e.value['sendBy'] == widget.userData.uid) ? '1' : '2',
               ))
           .toList();
     }
@@ -161,7 +160,7 @@ class _ChatPageState extends State<ChatPage> {
             id: data['id'],
             message: data['message'],
             createdAt: DateTime.parse(data['createdAt']),
-            sendBy: (data['sendBy'] == widget.userData.user.uid) ? '1' : '2',
+            sendBy: (data['sendBy'] == widget.userData.uid) ? '1' : '2',
             messageType: getMessageTypeFromJson(data['messageType']),
             //replyMessage: ReplyMessage.fromJson(data['replyMessage']),
             replyMessage: ReplyMessage(
@@ -169,14 +168,12 @@ class _ChatPageState extends State<ChatPage> {
               message: data['replyMessage']['message'],
               messageType: getMessageTypeFromJson(data[
                   'messageType']), // TODO: ASSUMING ONLY TEXT REPLIES!! HOW TO INFER MessageType from json?? if-else??
-              replyBy:
-                  (data['replyMessage']['replyBy'] == widget.userData.user.uid)
-                      ? "1"
-                      : "2",
-              replyTo:
-                  (data['replyMessage']['replyTo'] == widget.userData.user.uid)
-                      ? "1"
-                      : "2",
+              replyBy: (data['replyMessage']['replyBy'] == widget.userData.uid)
+                  ? "1"
+                  : "2",
+              replyTo: (data['replyMessage']['replyTo'] == widget.userData.uid)
+                  ? "1"
+                  : "2",
             ));
 
         // TODO: Image reply is kinda messed
@@ -215,8 +212,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    matchData =
-        backendFirebaseGetUserAndAstroData(widget.userData.astroData.matchUid);
+    matchData = backendFirebaseGetUserData(widget.userData.astroData.matchUid);
     // ========= Chat stuff===========
     _chatController = ChatController(
       initialMessageList: messageList,
@@ -259,7 +255,7 @@ class _ChatPageState extends State<ChatPage> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight + 10),
           child: SafeArea(
-            child: FutureBuilder<UserAndAstroData>(
+            child: FutureBuilder<UserModel>(
               future: matchData,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
@@ -291,13 +287,13 @@ class _ChatPageState extends State<ChatPage> {
                           child: CircleAvatar(
                             radius: 20,
                             backgroundImage:
-                                NetworkImage(snapshot.data!.user.photoUrl),
+                                NetworkImage(snapshot.data!.photoUrl),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            snapshot.data!.user.name,
+                            snapshot.data!.name,
                             style: const TextStyle(
                               fontSize: 18,
                               color: yelloww,
@@ -336,7 +332,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         body: Center(
-          child: FutureBuilder<UserAndAstroData>(
+          child: FutureBuilder<UserModel>(
             future: matchData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
@@ -438,8 +434,7 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
-  void _showUserInfoBottomSheet(
-      BuildContext context, UserAndAstroData userData) {
+  void _showUserInfoBottomSheet(BuildContext context, UserModel userData) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -487,11 +482,11 @@ class _ChatPageState extends State<ChatPage> {
                     const SizedBox(height: 16),
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(userData.user.photoUrl),
+                      backgroundImage: NetworkImage(userData.photoUrl),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      userData.user.name,
+                      userData.name,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -500,7 +495,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     Text(
-                      "@${userData.user.handle}",
+                      "@${userData.handle}",
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'Manrope',
@@ -511,7 +506,7 @@ class _ChatPageState extends State<ChatPage> {
                     Divider(color: bgcolor.withOpacity(0.2), thickness: 1),
                     const SizedBox(height: 24),
                     _buildInfoRow(Icons.cake, "Birthday",
-                        _formatDate(userData.user.dateOfBirth)),
+                        _formatDate(userData.dateOfBirth)),
                     _buildInfoRowWithZodiac(Icons.wb_sunny, "Sun Sign",
                         userData.astroData.planetSigns["sun"] ?? "Unknown"),
                     _buildInfoRowWithZodiac(Icons.nightlight_round, "Moon Sign",
@@ -521,8 +516,8 @@ class _ChatPageState extends State<ChatPage> {
                         "Ascendant",
                         userData.astroData.planetSigns["ascendant"] ??
                             "Unknown"),
-                    _buildInfoRow(Icons.location_on, "Born in",
-                        userData.user.placeOfBirth),
+                    _buildInfoRow(
+                        Icons.location_on, "Born in", userData.placeOfBirth),
                     // Add more details as needed
                   ],
                 ),
@@ -689,9 +684,11 @@ class _LoadingWidgetState extends State<LoadingWidget> {
   void initState() {
     super.initState();
     _timer = Timer(const Duration(seconds: 5), () {
-      setState(() {
-        _showConnectivityWarning = true;
-      });
+      if (mounted) {
+        setState(() {
+          _showConnectivityWarning = true;
+        });
+      }
     });
   }
 

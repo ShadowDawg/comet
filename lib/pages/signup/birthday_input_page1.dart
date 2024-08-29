@@ -15,10 +15,12 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
   bool _isDateSelected = false;
 
   void _onDateChanged(DateTime newDate) {
-    setState(() {
-      _selectedDate = newDate;
-      _isDateSelected = true;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedDate = newDate;
+        _isDateSelected = true;
+      });
+    }
   }
 
   void _navigateToNextPage() {

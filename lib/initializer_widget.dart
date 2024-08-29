@@ -5,10 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
-import 'package:test1/pages/horoscope_page.dart';
-import 'package:test1/pages/love_page.dart';
+import 'package:test1/pages/friends/friends_page.dart';
+import 'package:test1/pages/horoscope/horoscope_page.dart';
+import 'package:test1/pages/love/love_page.dart';
 import 'package:test1/pages/onboarding_welcome_page.dart';
-import 'package:test1/pages/personal_page.dart';
+import 'package:test1/pages/personal/personal_page.dart';
 import 'package:test1/providers/user_data_provider.dart';
 import 'package:test1/utils/error_dialog.dart';
 
@@ -187,15 +188,18 @@ class _NavigationHomeState extends State<NavigationHome> {
     }
     return [
       const HoroscopePage(),
+      // const FriendsPage(),
       const LovePage(),
       const PersonalPage(),
     ];
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -231,6 +235,10 @@ class _NavigationHomeState extends State<NavigationHome> {
               icon: Icon(Icons.home),
               label: '',
             ),
+            // NavigationDestination(
+            //   icon: Icon(Icons.people),
+            //   label: '',
+            // ),
             NavigationDestination(
               icon: Icon(Icons.favorite),
               label: '',

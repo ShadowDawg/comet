@@ -9,7 +9,7 @@ import '../models/user_and_astro_data.dart'; // For encoding the request body
 // const apiUrl = 'http://192.168.18.1:8000'; // connected device
 const apiUrl = "https://comet-api.vercel.app"; // first live deployment
 
-Future<UserAndAstroData> backendFirebaseCreateNewUser(
+Future<UserModel> backendFirebaseCreateNewUser(
     Map<String, dynamic> userData) async {
   var url = Uri.parse('$apiUrl/createUser');
   print("calling api to create user");
@@ -24,14 +24,10 @@ Future<UserAndAstroData> backendFirebaseCreateNewUser(
       final responseData = json.decode(response.body);
 
       // Parse user data
-      userModel user = userModel.fromJson(responseData['userData']);
-
-      // Parse astro data
-      AstroDataModel astroData =
-          AstroDataModel.fromJson(responseData['astroData']);
+      UserModel user = UserModel.fromJson(responseData);
 
       // Return both user and astro data
-      return UserAndAstroData(user: user, astroData: astroData);
+      return user;
     } else {
       throw Exception('Failed to create user: ${response.body}');
     }
@@ -59,7 +55,7 @@ Future<void> backendFirebaseUpdateMatchApproved(
   }
 }
 
-Future<UserAndAstroData> backendFirebaseGetUserAndAstroData(String uid) async {
+Future<UserModel> backendFirebaseGetUserData(String uid) async {
   final response = await http.post(
     Uri.parse('$apiUrl/getUserData'),
     body: json.encode({"userUid": uid}),
@@ -68,39 +64,13 @@ Future<UserAndAstroData> backendFirebaseGetUserAndAstroData(String uid) async {
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
-    return UserAndAstroData(
-      user: userModel.fromJson(data['userData']),
-      astroData: AstroDataModel.fromJson(data['astroData']),
-    );
+    // return UserAndAstroData(
+    //   user: userModel.fromJson(data['userData']),
+    //   astroData: AstroDataModel.fromJson(data['astroData']),
+    // );
+    return UserModel.fromJson(data);
   } else {
     throw Exception('Failed to load user data');
-  }
-}
-
-Future<void> backendFirebaseSetUserData(userModel user) async {
-  final url = Uri.parse('$apiUrl/setUserData'); // Update with your actual URL
-
-  // Convert DateTime to ISO8601 string
-  // final dateOfBirthString = user.dateOfBirth?.toIso8601String();
-
-  final response = await http.post(
-    url,
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode({
-      'uid': user.uid,
-      'email': user.email,
-      'name': user.name,
-      'dateOfBirth': user.dateOfBirth,
-      'placeOfBirth': user.placeOfBirth,
-      'photoUrl': user.photoUrl,
-      'gender': user.gender,
-      'chatRoomId': user.chatRoomId,
-      'handle': user.handle,
-    }),
-  );
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to set user data');
   }
 }
 

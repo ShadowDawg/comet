@@ -24,16 +24,18 @@ class _BirthTimeInputPageState extends State<BirthTimeInputPage> {
   }
 
   void _onTimeChanged(DateTime newTime) {
-    setState(() {
-      _selectedDateTime = DateTime(
-        _selectedDateTime.year,
-        _selectedDateTime.month,
-        _selectedDateTime.day,
-        newTime.hour,
-        newTime.minute,
-      );
-      _isTimeSelected = true;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedDateTime = DateTime(
+          _selectedDateTime.year,
+          _selectedDateTime.month,
+          _selectedDateTime.day,
+          newTime.hour,
+          newTime.minute,
+        );
+        _isTimeSelected = true;
+      });
+    }
   }
 
   void _navigateToNextPage() {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:test1/models/astro_data.dart';
 
-class userModel {
+class UserModel {
   final String uid;
   final String email;
   final String name;
@@ -13,8 +14,9 @@ class userModel {
   final String phoneNumber;
   bool notificationsEnabled;
   String? fcmToken;
+  final AstroDataModel astroData;
 
-  userModel({
+  UserModel({
     required this.uid,
     required this.email,
     required this.name,
@@ -27,10 +29,11 @@ class userModel {
     required this.phoneNumber,
     required this.notificationsEnabled,
     this.fcmToken,
+    required this.astroData,
   });
 
-  factory userModel.fromJson(Map<String, dynamic> json) {
-    return userModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       uid: json['uid'] ?? '',
       email: json['email'] ?? '',
       name: json['name'] ?? '',
@@ -41,9 +44,10 @@ class userModel {
       gender: json['gender'] ?? '',
       chatRoomId: json['chatRoomId'] ?? '',
       handle: json['handle'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? 0,
+      phoneNumber: json['phoneNumber'] ?? '',
       notificationsEnabled: json['notificationsEnabled'] ?? false,
       fcmToken: json['fcmToken'],
+      astroData: AstroDataModel.fromJson(json['astroData'] ?? {}),
     );
   }
 
@@ -61,10 +65,15 @@ class userModel {
       'phoneNumber': phoneNumber,
       'notificationsEnabled': notificationsEnabled,
       'fcmToken': fcmToken,
+      'astroData': astroData.toJson(),
     };
   }
 
-  userModel copyWith({
+  factory UserModel.fromFirestore(Map<String, dynamic> data) {
+    return UserModel.fromJson(data);
+  }
+
+  UserModel copyWith({
     String? uid,
     String? email,
     String? name,
@@ -77,8 +86,9 @@ class userModel {
     String? phoneNumber,
     bool? notificationsEnabled,
     String? fcmToken,
+    AstroDataModel? astroData,
   }) {
-    return userModel(
+    return UserModel(
       uid: uid ?? this.uid,
       email: email ?? this.email,
       name: name ?? this.name,
@@ -91,6 +101,7 @@ class userModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       fcmToken: fcmToken ?? this.fcmToken,
+      astroData: astroData ?? this.astroData,
     );
   }
 }

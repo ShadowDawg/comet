@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:test1/colors.dart';
-import 'package:test1/models/user_and_astro_data.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:test1/pages/settings_page.dart';
+import 'package:test1/models/user.dart';
 
 class UserProfileHeader extends StatelessWidget {
-  final UserAndAstroData userData;
+  final UserModel userData;
 
   const UserProfileHeader({Key? key, required this.userData}) : super(key: key);
 
@@ -56,7 +53,7 @@ class UserProfileHeader extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundImage: NetworkImage(userData.user.photoUrl),
+                backgroundImage: NetworkImage(userData.photoUrl),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -64,7 +61,7 @@ class UserProfileHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "@${userData.user.handle}",
+                      "@${userData.handle}",
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 24,

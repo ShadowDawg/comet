@@ -1,15 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:test1/backend/firebase_tools.dart';
+import 'package:test1/models/user.dart';
 import 'package:test1/models/user_and_astro_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class UserDataProvider extends ChangeNotifier {
-  UserAndAstroData? _userData;
+  UserModel? _userData;
   bool _isLoading = false;
   String? _error;
 
-  UserAndAstroData? get userData => _userData;
+  UserModel? get userData => _userData;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -19,7 +20,7 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _userData = await backendFirebaseGetUserAndAstroData(userId);
+      _userData = await backendFirebaseGetUserData(userId);
       await _saveToLocalStorage(_userData!);
     } catch (e) {
       _error = 'Failed to fetch user data.';
@@ -43,9 +44,8 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      String userId = _userData!.user.uid;
-      UserAndAstroData refreshedData =
-          await backendFirebaseGetUserAndAstroData(userId);
+      String userId = _userData!.uid;
+      UserModel refreshedData = await backendFirebaseGetUserData(userId);
 
       // Update the current data
       _userData = refreshedData;
@@ -64,13 +64,13 @@ class UserDataProvider extends ChangeNotifier {
     }
   }
 
-  void setUserData(UserAndAstroData data) {
+  void setUserData(UserModel data) {
     _userData = data;
     _saveToLocalStorage(data);
     notifyListeners();
   }
 
-  void updateUserData(UserAndAstroData Function(UserAndAstroData) update) {
+  void updateUserData(UserModel Function(UserModel) update) {
     if (_userData != null) {
       _userData = update(_userData!);
       _saveToLocalStorage(_userData!);
@@ -84,16 +84,16 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _saveToLocalStorage(UserAndAstroData data) async {
+  Future<void> _saveToLocalStorage(UserModel data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('user_data', json.encode(data.toJson()));
   }
 
-  Future<UserAndAstroData?> _loadFromLocalStorage() async {
+  Future<UserModel?> _loadFromLocalStorage() async {
     final prefs = await SharedPreferences.getInstance();
     final storedData = prefs.getString('user_data');
     if (storedData != null) {
-      return UserAndAstroData.fromFirestore(json.decode(storedData));
+      return UserModel.fromFirestore(json.decode(storedData));
     }
     return null;
   }

@@ -8,8 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
+import 'package:test1/models/user.dart';
 import 'package:test1/providers/user_data_provider.dart';
-import 'package:test1/models/user_and_astro_data.dart';
 import 'package:test1/initializer_widget.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -52,9 +52,11 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
   bool _showConnectionMessage = false;
 
   Future<void> _signInWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     // Start a timer to show the connection message after 5 seconds
     Future.delayed(const Duration(seconds: 5), () {
@@ -126,7 +128,7 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
           }
         }
 
-        UserAndAstroData newUser =
+        UserModel newUser =
             await backendFirebaseCreateNewUser(userData).timeout(
           const Duration(seconds: 30),
           onTimeout: () {
@@ -138,7 +140,7 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
           FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
             FirebaseFirestore.instance
                 .collection('users')
-                .doc(newUser.user.uid)
+                .doc(newUser.uid)
                 .update({'fcmToken': token});
           });
         }

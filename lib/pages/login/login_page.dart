@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
 import 'package:test1/initializer_widget.dart';
-import 'package:test1/models/user_and_astro_data.dart';
-import 'package:test1/pages/google_signup_page.dart';
-import 'package:test1/pages/login_notifications_permission_page.dart';
+import 'package:test1/models/user.dart';
+import 'package:test1/pages/signup/google_signup_page6.dart';
+import 'package:test1/pages/login/login_notifications_permission_page.dart';
 import 'package:test1/providers/user_data_provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -123,8 +123,8 @@ class _LoginPageState extends State<LoginPage> {
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       // Fetch user data
-      UserAndAstroData userData =
-          await backendFirebaseGetUserAndAstroData(userCredential.user!.uid);
+      UserModel userData =
+          await backendFirebaseGetUserData(userCredential.user!.uid);
 
       if (!mounted) return;
 
@@ -133,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
           .setUserData(userData);
 
       // Navigate based on notification settings
-      if (!userData.user.notificationsEnabled || true) {
+      if (!userData.notificationsEnabled) {
         Navigator.pushReplacement(
           context,
           PageTransition(

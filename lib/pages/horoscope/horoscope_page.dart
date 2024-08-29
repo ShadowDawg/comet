@@ -2,9 +2,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/colors.dart';
-import 'package:test1/pages/horoscope_widgets.dart';
+import 'package:test1/models/user.dart';
+import 'package:test1/pages/horoscope/horoscope_widgets.dart';
 import 'package:test1/providers/user_data_provider.dart';
-import '../models/user_and_astro_data.dart'; // Adjust the path to where your UserModel is located
 
 class HoroscopePage extends StatefulWidget {
   const HoroscopePage({Key? key}) : super(key: key);
@@ -25,10 +25,12 @@ class _HoroscopePageState extends State<HoroscopePage> {
 
   Future<void> _checkConnectivity() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    setState(() {
-      _isCheckingConnectivity = false;
-      _hasInternetConnection = connectivityResult != ConnectivityResult.none;
-    });
+    if (mounted) {
+      setState(() {
+        _isCheckingConnectivity = false;
+        _hasInternetConnection = connectivityResult != ConnectivityResult.none;
+      });
+    }
   }
 
   Future<void> _refreshData() async {
@@ -160,7 +162,7 @@ class _HoroscopePageState extends State<HoroscopePage> {
           return _buildLoadingWidget();
         }
 
-        final UserAndAstroData? userData = userDataProvider.userData;
+        final UserModel? userData = userDataProvider.userData;
 
         if (userData == null) {
           return _buildErrorWidget(
@@ -190,10 +192,10 @@ class _HoroscopePageState extends State<HoroscopePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: HoroscopeCard(
-                  photoUrl: userData.user.photoUrl,
+                  photoUrl: userData.photoUrl,
                   avatarRadius: avatarRadius,
                   horoscope: userData.astroData.dailyHoroscope,
-                  userName: userData.user.name,
+                  userName: userData.name,
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
