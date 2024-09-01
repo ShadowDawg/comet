@@ -16,7 +16,7 @@ const whitee = Color((0xFFFFFEFF));
 const offwhite = Color((0xFFF2F1EA)); // OG
 // const offwhite = Color((0xFFE0E0E0)); // more dull
 
-const greyy = Colors.grey;
+const greyy = Color(0xFF9E9E9E);
 
 // const darkGreyy = Color(0x1AFFFFFF); // base with opacity
 const darkGreyy = Color(0xFF1c1c1c); // actual color
