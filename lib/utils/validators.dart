@@ -8,8 +8,14 @@ class Validators {
     if (value.length < 2) {
       return 'Name must be at least 2 characters long';
     }
-    if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
-      return 'Name can only contain letters and spaces';
+    if (value.length > 12) {
+      return 'Name cannot exceed 12 characters';
+    }
+    if (value.contains(' ')) {
+      return 'Name must be a single word';
+    }
+    if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+      return 'Name can only contain letters';
     }
     return null;
   }

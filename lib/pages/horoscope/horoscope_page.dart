@@ -67,7 +67,9 @@ class _HoroscopePageState extends State<HoroscopePage> {
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Color(0xFFC0C0BE),
+                      // color: Color(0xFFC0C0BE),
+                      color: yelloww,
+                      width: 2.0,
                     ),
                   ),
                 ),
@@ -188,7 +190,10 @@ class _HoroscopePageState extends State<HoroscopePage> {
           child: Column(
             children: <Widget>[
               // GreetingWidget(userName: userData.user.name),
-              // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              //SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              const SizedBox(
+                height: 16,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: HoroscopeCard(

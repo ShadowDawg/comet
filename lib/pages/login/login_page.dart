@@ -170,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
           print(e);
           // assuming that this is only called when no account associated with valid email
           _showErrorDialog(
-              'An unexpected error occurred during Google sign-in. No account found.');
+              'An unexpected error occurred during Google sign-in.');
         }
       }
     } finally {

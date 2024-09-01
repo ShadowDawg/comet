@@ -9,7 +9,7 @@ class UserModel {
   String placeOfBirth;
   String photoUrl;
   final String gender;
-  final String chatRoomId;
+
   String handle;
   final String phoneNumber;
   bool notificationsEnabled;
@@ -24,7 +24,6 @@ class UserModel {
     required this.placeOfBirth,
     required this.photoUrl,
     required this.gender,
-    required this.chatRoomId,
     required this.handle,
     required this.phoneNumber,
     required this.notificationsEnabled,
@@ -42,7 +41,6 @@ class UserModel {
       photoUrl: json['photoUrl'] ??
           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWqPhrfTFyCACSkoLLy3NHfEBRNh6xgD-zmw&s',
       gender: json['gender'] ?? '',
-      chatRoomId: json['chatRoomId'] ?? '',
       handle: json['handle'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
       notificationsEnabled: json['notificationsEnabled'] ?? false,
@@ -60,7 +58,6 @@ class UserModel {
       'placeOfBirth': placeOfBirth,
       'photoUrl': photoUrl,
       'gender': gender,
-      'chatRoomId': chatRoomId,
       'handle': handle,
       'phoneNumber': phoneNumber,
       'notificationsEnabled': notificationsEnabled,
@@ -81,7 +78,6 @@ class UserModel {
     String? placeOfBirth,
     String? photoUrl,
     String? gender,
-    String? chatRoomId,
     String? handle,
     String? phoneNumber,
     bool? notificationsEnabled,
@@ -96,7 +92,6 @@ class UserModel {
       placeOfBirth: placeOfBirth ?? this.placeOfBirth,
       photoUrl: photoUrl ?? this.photoUrl,
       gender: gender ?? this.gender,
-      chatRoomId: chatRoomId ?? this.chatRoomId,
       handle: handle ?? this.handle,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,

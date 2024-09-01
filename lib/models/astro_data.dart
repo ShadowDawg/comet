@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class AstroDataModel {
-  final String uid;
   final String dailyHoroscope;
   final String detailedReading;
   final String matchUid;
@@ -12,7 +12,6 @@ class AstroDataModel {
   final Map<String, List<String>> actionTable;
 
   AstroDataModel({
-    required this.uid,
     required this.dailyHoroscope,
     required this.detailedReading,
     required this.matchUid,
@@ -27,11 +26,11 @@ class AstroDataModel {
     String sanitizeString(String? input) {
       print("AYY: $input");
       if (input == null) return '';
-      return input.replaceAll('—', '-').replaceAll('’', "'");
+      final decodedString = utf8.decode(input.codeUnits);
+      return decodedString;
     }
 
     return AstroDataModel(
-      uid: json['uid'] ?? '',
       dailyHoroscope: sanitizeString(json['dailyHoroscope']),
       detailedReading: sanitizeString(json['detailedReading']),
       matchUid: json['matchUid'] ?? '',
@@ -45,7 +44,6 @@ class AstroDataModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': uid,
       'dailyHoroscope': dailyHoroscope,
       'detailedReading': detailedReading,
       'matchUid': matchUid,
@@ -83,7 +81,6 @@ class AstroDataModel {
     Map<String, List<String>>? actionTable,
   }) {
     return AstroDataModel(
-      uid: uid ?? this.uid,
       dailyHoroscope: dailyHoroscope ?? this.dailyHoroscope,
       detailedReading: detailedReading ?? this.detailedReading,
       matchUid: matchUid ?? this.matchUid,

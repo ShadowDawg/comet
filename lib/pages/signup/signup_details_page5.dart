@@ -538,10 +538,10 @@ class CircularProfileImage extends StatelessWidget {
       onTap: onTap,
       child: CircleAvatar(
         radius: avatarRadius,
-        backgroundColor: Colors.grey[200],
+        backgroundColor: darkGreyy,
         backgroundImage: imageFile != null ? FileImage(imageFile!) : null,
         child: imageFile == null
-            ? Icon(Icons.add_a_photo, size: 50, color: Colors.grey[800])
+            ? const Icon(Icons.add_a_photo, size: 50, color: greyy)
             : null,
       ),
     );

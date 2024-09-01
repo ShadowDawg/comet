@@ -61,6 +61,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   contacts_service: ^0.6.3
   permission_handler: ^11.3.1
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

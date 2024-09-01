@@ -154,27 +154,34 @@ class _ChatPageState extends State<ChatPage> {
         .listen((DatabaseEvent event) {
       // This will be triggered for each individual message as it is added
       final data = event.snapshot.value as Map<dynamic, dynamic>;
+      // print(data['replyMessage']['message_type']);
+      if (data['replyMessage']['message_type'] == "MessageType.image") {
+        data['replyMessage']['message'] = "Photo ";
+      }
+      // print(data);
       if (data != null) {
         Message newMessage = Message(
-            //id: event.snapshot.key!,
-            id: data['id'],
-            message: data['message'],
-            createdAt: DateTime.parse(data['createdAt']),
-            sendBy: (data['sendBy'] == widget.userData.uid) ? '1' : '2',
-            messageType: getMessageTypeFromJson(data['messageType']),
-            //replyMessage: ReplyMessage.fromJson(data['replyMessage']),
-            replyMessage: ReplyMessage(
-              messageId: data['replyMessage']['id'],
-              message: data['replyMessage']['message'],
-              messageType: getMessageTypeFromJson(data[
-                  'messageType']), // TODO: ASSUMING ONLY TEXT REPLIES!! HOW TO INFER MessageType from json?? if-else??
-              replyBy: (data['replyMessage']['replyBy'] == widget.userData.uid)
-                  ? "1"
-                  : "2",
-              replyTo: (data['replyMessage']['replyTo'] == widget.userData.uid)
-                  ? "1"
-                  : "2",
-            ));
+          //id: event.snapshot.key!,
+          id: data['id'],
+          message: data['message'],
+          createdAt: DateTime.parse(data['createdAt']),
+          sendBy: (data['sendBy'] == widget.userData.uid) ? '1' : '2',
+          messageType: getMessageTypeFromJson(data['messageType']),
+          //replyMessage: ReplyMessage.fromJson(data['replyMessage']),
+          replyMessage: ReplyMessage(
+            messageId: data['replyMessage']['id'],
+            message: data['replyMessage']['message'],
+            messageType: getMessageTypeFromJson(data[
+                'messageType']), // TODO: ASSUMING ONLY TEXT REPLIES!! HOW TO INFER MessageType from json?? if-else??
+            replyBy: (data['replyMessage']['replyBy'] == widget.userData.uid)
+                ? "1"
+                : "2",
+            replyTo: (data['replyMessage']['replyTo'] == widget.userData.uid)
+                ? "1"
+                : "2",
+          ),
+          status: MessageStatus.delivered,
+        );
 
         // TODO: Image reply is kinda messed
 
@@ -261,11 +268,11 @@ class _ChatPageState extends State<ChatPage> {
                 if (snapshot.connectionState == ConnectionState.done &&
                     snapshot.hasData) {
                   return AppBar(
-                    backgroundColor: tile_color,
+                    backgroundColor: Colors.transparent,
                     leading: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: yelloww,
+                      icon: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: yelloww.withOpacity(0.5),
                       ),
                       onPressed: () {
                         Navigator.of(context).pushAndRemoveUntil(
@@ -278,32 +285,55 @@ class _ChatPageState extends State<ChatPage> {
                         );
                       },
                     ),
-                    title: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showUserInfoBottomSheet(context, snapshot.data!);
-                          },
-                          child: CircleAvatar(
+                    title: GestureDetector(
+                      onTap: () {
+                        _showUserInfoBottomSheet(context, snapshot.data!);
+                      },
+                      child: Row(
+                        children: [
+                          CircleAvatar(
                             radius: 20,
                             backgroundImage:
                                 NetworkImage(snapshot.data!.photoUrl),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            snapshot.data!.name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: yelloww,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  snapshot.data!.name,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: yelloww,
+                                    fontFamily: "Manrope",
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  '@${snapshot.data!.handle}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: greyy.withOpacity(0.7),
+                                    fontFamily: "Manrope",
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    toolbarHeight: kToolbarHeight + 10,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(2.0),
+                      child: Container(
+                        color: yelloww,
+                        height: 2.0,
+                      ),
+                    ),
+                    toolbarHeight: kToolbarHeight + 20,
                   );
                 } else {
                   return AppBar(
@@ -339,7 +369,11 @@ class _ChatPageState extends State<ChatPage> {
                 if (snapshot.hasData) {
                   //return Text("Chatting with ${snapshot.data!.name}");
                   return ChatView(
-                    currentUser: ChatUser(id: '1', name: 'Flutter'),
+                    currentUser: ChatUser(
+                      id: '1',
+                      name: 'Flutter',
+                      //profilePhoto: snapshot.data!.photoUrl,
+                    ),
                     chatController: _chatController,
                     onSendTap: _onSendTap,
                     chatViewState: ChatViewState
@@ -350,19 +384,24 @@ class _ChatPageState extends State<ChatPage> {
                     chatBackgroundConfig: const ChatBackgroundConfiguration(
                       backgroundColor: bgcolor,
                       // backgroundColor: whitee, // light
-                      // messageTimeTextStyle: TextStyle(
-                      //   color: yelloww,
-                      // ),
+                      messageTimeTextStyle: TextStyle(
+                        color: yelloww,
+                      ),
                     ),
                     profileCircleConfig: const ProfileCircleConfiguration(
-                      profileImageUrl: null,
+                      // profileImageUrl: snapshot.data!.photoUrl,
+                      circleRadius: 0.0,
+                      bottomPadding: 0.0,
                     ),
-                    repliedMessageConfig: const RepliedMessageConfiguration(
-                      repliedMsgAutoScrollConfig: RepliedMsgAutoScrollConfig(
+                    repliedMessageConfig: RepliedMessageConfiguration(
+                      repliedMsgAutoScrollConfig:
+                          const RepliedMsgAutoScrollConfig(
                         enableHighlightRepliedMsg: true,
-                        highlightColor: Colors.grey,
+                        highlightColor: yelloww,
                         highlightScale: 1.1,
                       ),
+                      verticalBarColor: yelloww,
+                      backgroundColor: yelloww.withOpacity(0.7),
                     ),
                     sendMessageConfig: const SendMessageConfiguration(
                       textFieldBackgroundColor: tile_color,
@@ -389,6 +428,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     chatBubbleConfig: const ChatBubbleConfiguration(
+                      // margin: EdgeInsets.all(0),
                       inComingChatBubbleConfig: ChatBubble(
                         color: yelloww,
                         // color: bgcolor, // light
@@ -397,6 +437,7 @@ class _ChatPageState extends State<ChatPage> {
                           // color: whitee, // light
                           fontFamily: 'Manrope',
                         ),
+                        // margin: EdgeInsets.all(0),
                       ),
                       outgoingChatBubbleConfig: ChatBubble(
                         color: tile_color,
@@ -409,6 +450,14 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       ),
                     ),
+                    replyPopupConfig: const ReplyPopupConfiguration(
+                      buttonTextStyle: TextStyle(
+                        color: yelloww,
+                      ),
+                      backgroundColor: yelloww,
+                    ),
+                    reactionPopupConfig: null,
+                    // messageConfig: MessageConfiguration(),
                   );
                 } else if (snapshot.hasError) {
                   return const Center(

@@ -18,6 +18,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 final List<String> whitelistedEmails = [
   "shadowpenguin2004@gmail.com",
   "testcometcomet@gmail.com",
+  "devmandal2004@gmail.com",
 ];
 
 class GoogleSignInPage extends StatefulWidget {

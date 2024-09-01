@@ -184,11 +184,12 @@ class _NavigationHomeState extends State<NavigationHome> {
         Container(),
         Container(),
         Container(),
+        Container(),
       ];
     }
     return [
       const HoroscopePage(),
-      // const FriendsPage(),
+      const FriendsPage(),
       const LovePage(),
       const PersonalPage(),
     ];
@@ -235,10 +236,10 @@ class _NavigationHomeState extends State<NavigationHome> {
               icon: Icon(Icons.home),
               label: '',
             ),
-            // NavigationDestination(
-            //   icon: Icon(Icons.people),
-            //   label: '',
-            // ),
+            NavigationDestination(
+              icon: Icon(Icons.people),
+              label: '',
+            ),
             NavigationDestination(
               icon: Icon(Icons.favorite),
               label: '',

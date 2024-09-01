@@ -1,3 +1,5 @@
+import 'package:test1/models/friend_basic_data.dart';
+
 import '../models/astro_data.dart';
 import '../models/user.dart'; // Make sure to import the user model
 import 'package:http/http.dart' as http;
@@ -5,9 +7,9 @@ import 'dart:convert';
 
 import '../models/user_and_astro_data.dart'; // For encoding the request body
 
-// const apiUrl = 'http://10.0.2.2:8000'; // emulator
+const apiUrl = 'http://10.0.2.2:8000'; // emulator
 // const apiUrl = 'http://192.168.18.1:8000'; // connected device
-const apiUrl = "https://comet-api.vercel.app"; // first live deployment
+// const apiUrl = "https://comet-api.vercel.app"; // first live deployment
 
 Future<UserModel> backendFirebaseCreateNewUser(
     Map<String, dynamic> userData) async {
@@ -24,7 +26,7 @@ Future<UserModel> backendFirebaseCreateNewUser(
       final responseData = json.decode(response.body);
 
       // Parse user data
-      UserModel user = UserModel.fromJson(responseData);
+      UserModel user = UserModel.fromJson(responseData["userData"]);
 
       // Return both user and astro data
       return user;
@@ -160,5 +162,32 @@ Future<bool> backendFirebaseUpdateUserField(
   } catch (e) {
     print('Error updating user field: $e');
     return false;
+  }
+}
+
+Future<List<FriendBasicData>> FirebaseGetFriendsBasicDataList(
+    String userUid, List<String> phoneNumbers) async {
+  try {
+    final response = await http.post(
+      Uri.parse('$apiUrl/update-friends-with-contacts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'user_uid': userUid,
+        'numbers': phoneNumbers,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> friendsJson = data['friends'];
+
+      return friendsJson.map((json) => FriendBasicData.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load friends data: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error fetching friends data: $e');
   }
 }

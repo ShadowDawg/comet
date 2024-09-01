@@ -110,7 +110,8 @@ class _PersonalPageState extends State<PersonalPage> {
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Color(0xFFC0C0BE),
+                      color: yelloww,
+                      width: 2.0,
                     ),
                   ),
                 ),
@@ -198,7 +199,7 @@ class _PersonalPageState extends State<PersonalPage> {
     return Column(
       children: [
         // GreetingWidget(),
-        //const SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildSegmentedControl(),
         Expanded(
           child: Center(
@@ -402,7 +403,7 @@ class SignsTab extends StatelessWidget {
     if (birthday.month % 2 == 0) {
       return "ngl your signs say you're cooked";
     } else {
-      return "Your stars are aligned for greatness!";
+      return "Your stars are aligned for greatness.";
     }
   }
 

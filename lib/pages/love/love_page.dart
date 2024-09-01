@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:test1/backend/firebase_tools.dart';
 import 'package:test1/colors.dart';
@@ -117,7 +118,8 @@ class _LovePageState extends State<LovePage> {
                 decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Color(0xFFC0C0BE),
+                      color: yelloww,
+                      width: 2.0,
                     ),
                   ),
                 ),
@@ -218,11 +220,12 @@ class _LovePageState extends State<LovePage> {
   Widget _buildContentBasedOnUser(BuildContext context, UserModel userData) {
     if (userData.astroData.matchUid.isEmpty) {
       print("hmm");
-      return const SafeArea(
+      return SafeArea(
         child: Column(
           children: [
             //GreetingWidgetLove(),
-            MatchmakingInfoWidget(),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            const MatchmakingInfoWidget(),
           ],
         ),
       );
@@ -244,19 +247,74 @@ class _LovePageState extends State<LovePage> {
           ),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Text(
-                  "The stars have aligned✨",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    // fontWeight: FontWeight.bold,
-                    color: offwhite,
-                    fontFamily: 'Manrope',
-                  ),
-                ),
+              // const Padding(
+              //   padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+              //   child: Text(
+              //     "The stars have aligned✨",
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //       fontSize: 30,
+              //       // fontWeight: FontWeight.bold,
+              //       color: offwhite,
+              //       fontFamily: 'Manrope',
+              //     ),
+              //   ),
+              // ),
+              FutureBuilder<UserModel>(
+                future: backendFirebaseGetUserData(userData.astroData.matchUid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // return const CircularProgressIndicator(color: whitee);
+                    return LoadingWidget();
+                  } else if (snapshot.hasError) {
+                    return Text(
+                        "Error loading match details: ${snapshot.error}",
+                        style: const TextStyle(color: whitee));
+                  } else if (snapshot.hasData) {
+                    UserModel matchUser = snapshot.data!;
+                    return MatchCard(
+                      userData: userData,
+                      matchUser: matchUser,
+                      onStartChatting: () => _startChatting(context, userData),
+                    );
+                  } else {
+                    return const Text("No match data available",
+                        style: TextStyle(color: whitee));
+                  }
+                },
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMatchFoundContentBetter(
+      BuildContext context, UserModel userData) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.top,
+          ),
+          child: Column(
+            children: [
+              // const Padding(
+              //   padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+              //   child: Text(
+              //     "The stars have aligned✨",
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //       fontSize: 30,
+              //       // fontWeight: FontWeight.bold,
+              //       color: offwhite,
+              //       fontFamily: 'Manrope',
+              //     ),
+              //   ),
+              // ),
               FutureBuilder<UserModel>(
                 future: backendFirebaseGetUserData(userData.astroData.matchUid),
                 builder: (context, snapshot) {
@@ -356,35 +414,78 @@ class MatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 8,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [yelloww, yelloww.withOpacity(0.7)],
+      decoration: BoxDecoration(
+        color: yelloww,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildZodiacPictures(context),
-              const SizedBox(height: 24),
-              _buildMatchInfo(context),
-              const SizedBox(height: 24),
-              _buildConversationStarters(context),
-              const SizedBox(height: 24),
-              _buildStartChattingButton(context),
-            ],
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildTitle(),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // _buildZodiacPictures(context),
+                // const SizedBox(height: 24),
+                _buildMatchInfo(context),
+                const SizedBox(height: 24),
+                _buildConversationStarters(context),
+                const SizedBox(height: 24),
+                _buildStartChattingButton(context),
+              ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: const BoxDecoration(
+        // color: yelloww,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            "The stars have aligned",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: bgcolor,
+              fontFamily: 'Playwrite_HU',
+            ),
+          ),
+          const SizedBox(height: 16), // Space between text and divider
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20), // Adjust this value to change the gap size
+            child: Container(
+              height: 1, // Height of the divider
+              color: darkGreyy.withOpacity(0.5), // Color of the divider
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -393,24 +494,19 @@ class MatchCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildZodiacIcon(userData.astroData.planetSigns["sun"]!),
-        const SizedBox(width: 16),
-        TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.8, end: 1.0),
-          duration: const Duration(seconds: 1),
-          builder: (context, value, child) {
-            return Transform.scale(
-              scale: value,
-              child: const Icon(
-                Icons.favorite,
-                color: yelloww,
-                size: 48,
-              ),
-            );
-          },
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: _buildZodiacIcon(userData.astroData.planetSigns["sun"]!),
+          ),
         ),
         const SizedBox(width: 16),
-        _buildZodiacIcon(matchUser.astroData.planetSigns["sun"]!),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: _buildZodiacIcon(matchUser.astroData.planetSigns["sun"]!),
+          ),
+        ),
       ],
     );
   }
@@ -419,21 +515,14 @@ class MatchCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: const BoxDecoration(
-        // color: Colors.white,
+        color: yelloww,
         shape: BoxShape.circle,
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.1),
-        //     spreadRadius: 2,
-        //     blurRadius: 5,
-        //     offset: Offset(0, 3),
-        //   ),
-        // ],
       ),
       child: Image.asset(
         'assets/icons/$zodiacSign-icon.png',
         width: 60,
         height: 60,
+        color: darkGreyy,
       ),
     );
   }
@@ -444,11 +533,11 @@ class MatchCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildUserInfo(context, userData),
-        Container(
-          height: 180,
-          width: 1,
-          color: bgcolor.withOpacity(0.3),
-        ),
+        // Container(
+        //   height: 180,
+        //   width: 1,
+        //   color: yelloww.withOpacity(0.3),
+        // ),
         _buildUserInfo(context, matchUser),
       ],
     );
@@ -458,17 +547,19 @@ class MatchCard extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
+          _buildZodiacIcon(userData.astroData.planetSigns["sun"]!),
           Hero(
             tag: 'avatar_${user.uid}',
             child: CircleAvatar(
               radius: MediaQuery.of(context).size.width * 0.12,
-              backgroundColor: Colors.white,
+              backgroundColor: yelloww.withOpacity(0.2),
               child: ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: user.photoUrl,
                   placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                      const CircularProgressIndicator(color: yelloww),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, color: yelloww),
                   fit: BoxFit.cover,
                   width: MediaQuery.of(context).size.width * 0.24,
                   height: MediaQuery.of(context).size.width * 0.24,
@@ -542,7 +633,7 @@ class MatchCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
       child: const Text(
-        'Start Chatting',
+        'Start Chatting >',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
