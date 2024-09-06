@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CLIENT_ID</key>
+    <string>189041618462-ag2cpm2qh4o8o655fnsveneg949e060u.apps.googleusercontent.com</string>
+    <key>REVERSED_CLIENT_ID</key>
+    <string>com.googleusercontent.apps.189041618462-ag2cpm2qh4o8o655fnsveneg949e060u</string>
+    <key>API_KEY</key>
+    <dict>
+        <key>API_KEY</key>
+        <string>AIzaSyCNeryjLopXXQzjuqDJU6YpUr_PjY4FfDs</string>
+    </dict>
+    <key>PROJECT_ID</key>
+    <string>astro-app1</string>
+    <key>PROJECT_NUMBER</key>
+    <string>189041618462</string>
+    <key>STORAGE_BUCKET</key>
+    <string>astro-app1.appspot.com</string>
+    <key>DATABASE_URL</key>
+    <string>https://astro-app1-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+    <key>GOOGLE_APP_ID</key>
+    <string>1:189041618462:ios:1234567890abcdef</string>
+    <key>IS_ADS_ENABLED</key>
+    <true/>
+    <key>APP_ID</key>
+    <string>1:189041618462:ios:1234567890abcdef</string>
+    <key>DEVELOPER_ID</key>
+    <string>1234567890abcdef</string>
+</dict>
+</plist>

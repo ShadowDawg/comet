@@ -46,6 +46,26 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSContactsUsageDescription</key>
-	<string>This app requires contacts access to function properly.</string>
+	<string>Comet requires contacts access to add your friends.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photo library to set your account's profile photo.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<string>com.googleusercontent.apps.189041618462-ag2cpm2qh4o8o655fnsveneg949e060u</string>
+		</array>
+	</dict>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>GIDClientID</key>
+    <string>189041618462-ag2cpm2qh4o8o655fnsveneg949e060u.apps.googleusercontent.com</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to share photos.</string>
 </dict>
 </plist>

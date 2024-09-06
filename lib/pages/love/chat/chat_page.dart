@@ -93,12 +93,13 @@ class _ChatPageState extends State<ChatPage> {
     // editing replied by info to reflect uid's correctly
 
     print(editedReplyMessage.toJson());
+    print(messageToJson(editedReplyMessage));
     var userMessageDatabaseJson = {
       "id": DateTime.now().toString(),
       "message": message,
       "createdAt": DateTime.now().toString(),
       "sendBy": widget.userData.uid,
-      "replyMessage": editedReplyMessage.toFirebaseJson(),
+      "replyMessage": messageToJson(editedReplyMessage),
       "messageType": messageType.toString(),
     };
 
@@ -772,4 +773,16 @@ class _LoadingWidgetState extends State<LoadingWidget> {
       ),
     );
   }
+}
+
+Map<String, dynamic> messageToJson(ReplyMessage msg) {
+  Map<String, dynamic> temp = {
+        'message': msg.message,
+        'replyBy': msg.replyBy,
+        'replyTo': msg.replyTo,
+        'message_type': msg.messageType.toString(),
+        'id': msg.messageId,
+        'voiceMessageDuration': msg.voiceMessageDuration.toString(),
+      };
+    return temp;
 }
