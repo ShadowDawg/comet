@@ -78,6 +78,7 @@ class _NotificationPermissionPageState
   }
 
   void _showErrorDialog(BuildContext context) {
+  if (context.mounted) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -105,6 +106,8 @@ class _NotificationPermissionPageState
       },
     );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

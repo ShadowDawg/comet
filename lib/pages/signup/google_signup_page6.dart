@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -179,14 +181,40 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
   }
 
   Future<String> _uploadImage(File image) async {
+  try {
+    // Read the file as bytes
+    Uint8List fileBytes = await image.readAsBytes();
+    
+    // Generate a unique file name
     String fileName = '${DateTime.now().millisecondsSinceEpoch}_${widget.name}';
-    Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('profile_images/$fileName');
-    UploadTask uploadTask = firebaseStorageRef.putFile(image);
+    
+    // Create a reference to the Firebase Storage location
+    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('profile_images/$fileName');
+    
+    // Start the file upload using putData
+    UploadTask uploadTask = firebaseStorageRef.putData(fileBytes);
+    
+    // Await the completion of the upload task
     TaskSnapshot taskSnapshot = await uploadTask;
+    
+    // Retrieve the download URL of the uploaded file
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    
     return downloadUrl;
+  } on FirebaseException catch (e) {
+    // Handle Firebase-specific errors
+    print('FirebaseException: ${e.message}');
+    throw Exception('Failed to upload image: ${e.message}');
+  } on PlatformException catch (e) {
+    // Handle platform-specific errors
+    print('PlatformException: ${e.message}');
+    throw Exception('Failed to upload image: ${e.message}');
+  } catch (e) {
+    // Handle other errors
+    print('Exception: $e');
+    throw Exception('Failed to upload image: $e');
   }
+}
 
   void _showErrorDialog(String message) {
     showDialog(
