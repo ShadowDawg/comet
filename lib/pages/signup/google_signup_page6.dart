@@ -21,6 +21,10 @@ final List<String> whitelistedEmails = [
   "shadowpenguin2004@gmail.com",
   "testcometcomet@gmail.com",
   "devmandal2004@gmail.com",
+  "cometapp.official@gmail.com",
+  "shadowdawg2004@gmail.com",
+  "avataraangstudy@gmail.com",
+  "erplp7@gmail.com"
 ];
 
 class GoogleSignInPage extends StatefulWidget {
