@@ -37,7 +37,7 @@ class MatchmakingInfoWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              "Every week, we consult the cosmos (and our algorithms) to find your celestial soulmate. Or at least someone who won't ghost you immediately.",
+              "Every week, we consult the cosmos (and our algorithms) to find your celestial soulmate in insti. Or at least someone who won't ghost you immediately.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

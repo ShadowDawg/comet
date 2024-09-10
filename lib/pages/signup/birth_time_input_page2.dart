@@ -89,18 +89,6 @@ class _BirthTimeInputPageState extends State<BirthTimeInputPage> {
                   fontFamily: 'Manrope',
                 ),
               ),
-              const SizedBox(
-                  height: 8), // Add some space between title and subtitle
-              const Text(
-                'Yup the stars need this to find your match',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors
-                      .white54, // Using yellow for contrast, adjust as needed
-                  fontFamily: 'Manrope',
-                  // fontStyle: FontStyle.italic,
-                ),
-              ),
               const SizedBox(height: 20),
               Expanded(
                 child: Center(
@@ -128,15 +116,17 @@ class _BirthTimeInputPageState extends State<BirthTimeInputPage> {
                   ),
                 ),
               ),
-              // Text(
-              //   'Your data is used only for your personalized horoscopes and match-finding. It is never shared with third parties.',
-              //   style: TextStyle(
-              //     fontSize: 14,
-              //     color: Colors.grey[600],
-              //     fontStyle: FontStyle.italic,
-              //     fontFamily: 'Manrope',
-              //   ),
-              // ),
+              const SizedBox(height: 20),
+              Text(
+                'This data is needed for match-making and accurate horoscopes. It is not shared with third parties.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[400],
+                  fontStyle: FontStyle.italic,
+                  fontFamily: 'Manrope',
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _navigateToNextPage,

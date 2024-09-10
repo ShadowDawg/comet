@@ -43,8 +43,7 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: offwhite,
-      backgroundColor: bgcolor, // dark
+      backgroundColor: bgcolor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         forceMaterialTransparency: true,
@@ -52,8 +51,7 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            // color: bgcolor,
-            color: greyy, // dark
+            color: greyy,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -69,21 +67,8 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  // color: Colors.black87,
-                  color: greyy, // dark
+                  color: greyy,
                   fontFamily: 'Manrope',
-                ),
-              ),
-              const SizedBox(
-                  height: 8), // Add some space between title and subtitle
-              const Text(
-                'We\'ll remember to wish you happy bday :)',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors
-                      .white54, // Using yellow for contrast, adjust as needed
-                  fontFamily: 'Manrope',
-                  // fontStyle: FontStyle.italic,
                 ),
               ),
               const SizedBox(height: 20),
@@ -95,7 +80,6 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                       data: const CupertinoThemeData(
                         textTheme: CupertinoTextThemeData(
                           dateTimePickerTextStyle: TextStyle(
-                            // color: Colors.black87,
                             color: yelloww,
                             fontSize: 20,
                             fontFamily: 'Manrope',
@@ -114,23 +98,23 @@ class _BirthdayInputPageState extends State<BirthdayInputPage> {
                   ),
                 ),
               ),
-              // Text(
-              //   'Your data is used only for your personalized horoscopes and match-finding. It is never shared with third parties.',
-              //   style: TextStyle(
-              //     fontSize: 14,
-              //     color: Colors.grey[600],
-              //     fontStyle: FontStyle.italic,
-              //     fontFamily: 'Manrope',
-              //   ),
-              // ),
+              const SizedBox(height: 20),
+              Text(
+                'This data is needed for match-making and accurate horoscopes. It is not shared with third parties.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[400],
+                  fontStyle: FontStyle.italic,
+                  fontFamily: 'Manrope',
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _navigateToNextPage,
                 style: ElevatedButton.styleFrom(
-                  // backgroundColor: bgcolor,
-                  backgroundColor: yelloww, // dark
-                  // foregroundColor: offwhite,
-                  foregroundColor: bgcolor, // dark
+                  backgroundColor: yelloww,
+                  foregroundColor: bgcolor,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

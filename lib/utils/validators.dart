@@ -32,17 +32,17 @@ class Validators {
   }
 
   static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-    // if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-    //   return 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
-    // }
-    return null;
+  if (value == null || value.isEmpty) {
+    return 'Password is required';
   }
+  if (value.length < 6) {
+    return 'Password must be at least 6 characters long';
+  }
+  if (value.contains(RegExp(r'\s'))) {
+    return 'Password cannot contain whitespace';
+  }
+  return null;
+}
 
   static String? validateUsername(String? value) {
     if (value == null || value.isEmpty) {

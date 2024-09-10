@@ -23,6 +23,30 @@
           }
         },
         {
+          "client_id": "189041618462-9hj0lfa3danj6updmq8th0h5dl0arr63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cometmobile.comet",
+            "certificate_hash": "df3024a4325a66c7bddc542fbc5a4bfeebdccbb4"
+          }
+        },
+        {
+          "client_id": "189041618462-bjmmj2ub9280irrcfiq4aj0l8cunbe1f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cometmobile.comet",
+            "certificate_hash": "5e73ce86f4154b3123d95a8fa58645f8b981d7ff"
+          }
+        },
+        {
+          "client_id": "189041618462-cinb6c3gied6ojipm0a58oqtnum60r0e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cometmobile.comet",
+            "certificate_hash": "667e506e6ef3d7cd8a42f49af7e89105473157c2"
+          }
+        },
+        {
           "client_id": "189041618462-v0n4b1ktkvkeuo1rqf6ul1uv7kb78gc7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

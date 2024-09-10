@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -777,12 +779,12 @@ class _LoadingWidgetState extends State<LoadingWidget> {
 
 Map<String, dynamic> messageToJson(ReplyMessage msg) {
   Map<String, dynamic> temp = {
-        'message': msg.message,
-        'replyBy': msg.replyBy,
-        'replyTo': msg.replyTo,
-        'message_type': msg.messageType.toString(),
-        'id': msg.messageId,
-        'voiceMessageDuration': msg.voiceMessageDuration.toString(),
-      };
-    return temp;
+    'message': msg.message,
+    'replyBy': msg.replyBy,
+    'replyTo': msg.replyTo,
+    'message_type': msg.messageType.toString(),
+    'id': msg.messageId,
+    'voiceMessageDuration': msg.voiceMessageDuration.toString(),
+  };
+  return temp;
 }

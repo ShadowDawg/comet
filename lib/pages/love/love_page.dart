@@ -75,12 +75,14 @@ class _LovePageState extends State<LovePage> {
       await backendFirebaseUpdateMatchApproved(userData.uid, true);
 
       // Navigate to ChatPage
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatPage(userData: userData),
-        ),
-      );
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatPage(userData: userData),
+          ),
+        );
+      }
     } catch (e) {
       _showErrorDialog('Failed to start chatting: $e');
     } finally {
@@ -178,12 +180,6 @@ class _LovePageState extends State<LovePage> {
 
         return _buildContentBasedOnUser(context, userData);
       },
-    );
-  }
-
-  Widget _buildLoadingWidget() {
-    return const Center(
-      child: CircularProgressIndicator(color: whitee),
     );
   }
 
@@ -406,11 +402,11 @@ class MatchCard extends StatelessWidget {
   final VoidCallback onStartChatting;
 
   const MatchCard({
-    Key? key,
+    super.key,
     required this.userData,
     required this.matchUser,
     required this.onStartChatting,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

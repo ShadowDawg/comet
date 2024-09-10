@@ -106,6 +106,7 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
             birthplace: widget.birthplace,
             zodiacSign: widget.zodiacSign,
             notificationsEnabled: widget.notificationsEnabled,
+            password: _passwordController.text.trim(),
           ),
         ),
       );
@@ -226,12 +227,6 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
     }
   }
 
-  Future<T> _timeoutFuture<T>(Future<T> future, Duration timeout) {
-    return future.timeout(timeout, onTimeout: () {
-      throw TimeoutException('The connection has timed out, please try again!');
-    });
-  }
-
   void _showErrorDialog(String message) {
     if (!mounted) return; // Add this check
     showDialog(
@@ -316,6 +311,12 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
                     _nameController, 'First Name', Validators.validateName),
                 _buildTextField(
                     _handleController, 'Username', Validators.validateUsername),
+                _buildTextField(
+                  _passwordController,
+                  "Password",
+                  Validators.validatePassword,
+                  isPassword: true,
+                ),
                 _buildTextField(
                     _phoneController, 'Phone Number', Validators.validatePhone,
                     isPhone: true),
@@ -418,17 +419,6 @@ class _SignupDetailsPageState extends State<SignupDetailsPage> {
     );
   }
 
-  Widget _buildPasswordField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTextField(
-            _passwordController, 'Password', Validators.validatePassword,
-            isPassword: true),
-      ],
-    );
-  }
-
   Widget _buildGenderDropdown() {
     return DropdownButtonFormField<String>(
       value: _selectedGender,
@@ -526,10 +516,10 @@ class CircularProfileImage extends StatelessWidget {
   final VoidCallback onTap;
 
   const CircularProfileImage({
-    Key? key,
+    super.key,
     required this.imageFile,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

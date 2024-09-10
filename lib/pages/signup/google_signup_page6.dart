@@ -33,6 +33,7 @@ class GoogleSignInPage extends StatefulWidget {
   final String birthplace;
   final String zodiacSign;
   final bool notificationsEnabled;
+  final String password;
 
   GoogleSignInPage({
     required this.name,
@@ -44,6 +45,7 @@ class GoogleSignInPage extends StatefulWidget {
     required this.birthplace,
     required this.zodiacSign,
     required this.notificationsEnabled,
+    required this.password,
   });
 
   @override
@@ -74,10 +76,7 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
       // Check internet connectivity
       final result = await InternetAddress.lookup("google.com");
       if (result.isNotEmpty) {
-        // Sign out the user from GoogleSignIn
-        await GoogleSignIn().signOut();
-
-        // Trigger the authentication flow
+        // Trigger the Google authentication flow for email verification
         final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
         if (googleUser == null) {
@@ -94,19 +93,25 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
           return;
         }
 
-        // Obtain the auth details from the request
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
+        // Check if the email already exists in Firebase
+        final List<String> signInMethods = await FirebaseAuth.instance
+            .fetchSignInMethodsForEmail(googleUser.email);
+        if (signInMethods.isNotEmpty) {
+          _showErrorDialog(
+              'An account with this email already exists. Please log in instead.');
+          return;
+        }
 
-        // Create a new credential
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
+        // Email is verified and doesn't exist, now sign out from Google
+        await GoogleSignIn().signOut();
 
-        // Sign in to Firebase with the Google credential
+        // Create user with email and password
         final UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: googleUser.email,
+          password:
+              widget.password, // Assume password is provided in the widget
+        );
 
         // Upload the image to Firebase Storage
         String photoUrl = await _uploadImage(widget.image);
@@ -163,9 +168,11 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
       _showErrorDialog('Connection timed out. Please try again later.');
     } on FirebaseAuthException catch (e) {
       String message = 'An error occurred during authentication.';
-      if (e.code == 'account-exists-with-different-credential') {
+      if (e.code == 'email-already-in-use') {
         message =
-            'An account already exists with the same email address but different sign-in credentials. Please try signing in with a different method.';
+            'This email address is already in use. Please use a different email or try logging in.';
+      } else {
+        message = 'An error occurred during sign up: ${e.message}';
       }
       _showErrorDialog(message);
     } catch (e) {
@@ -181,40 +188,42 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
   }
 
   Future<String> _uploadImage(File image) async {
-  try {
-    // Read the file as bytes
-    Uint8List fileBytes = await image.readAsBytes();
-    
-    // Generate a unique file name
-    String fileName = '${DateTime.now().millisecondsSinceEpoch}_${widget.name}';
-    
-    // Create a reference to the Firebase Storage location
-    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('profile_images/$fileName');
-    
-    // Start the file upload using putData
-    UploadTask uploadTask = firebaseStorageRef.putData(fileBytes);
-    
-    // Await the completion of the upload task
-    TaskSnapshot taskSnapshot = await uploadTask;
-    
-    // Retrieve the download URL of the uploaded file
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    
-    return downloadUrl;
-  } on FirebaseException catch (e) {
-    // Handle Firebase-specific errors
-    print('FirebaseException: ${e.message}');
-    throw Exception('Failed to upload image: ${e.message}');
-  } on PlatformException catch (e) {
-    // Handle platform-specific errors
-    print('PlatformException: ${e.message}');
-    throw Exception('Failed to upload image: ${e.message}');
-  } catch (e) {
-    // Handle other errors
-    print('Exception: $e');
-    throw Exception('Failed to upload image: $e');
+    try {
+      // Read the file as bytes
+      Uint8List fileBytes = await image.readAsBytes();
+
+      // Generate a unique file name
+      String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${widget.name}';
+
+      // Create a reference to the Firebase Storage location
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('profile_images/$fileName');
+
+      // Start the file upload using putData
+      UploadTask uploadTask = firebaseStorageRef.putData(fileBytes);
+
+      // Await the completion of the upload task
+      TaskSnapshot taskSnapshot = await uploadTask;
+
+      // Retrieve the download URL of the uploaded file
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+    } on FirebaseException catch (e) {
+      // Handle Firebase-specific errors
+      print('FirebaseException: ${e.message}');
+      throw Exception('Failed to upload image: ${e.message}');
+    } on PlatformException catch (e) {
+      // Handle platform-specific errors
+      print('PlatformException: ${e.message}');
+      throw Exception('Failed to upload image: ${e.message}');
+    } catch (e) {
+      // Handle other errors
+      print('Exception: $e');
+      throw Exception('Failed to upload image: $e');
+    }
   }
-}
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -269,7 +278,7 @@ class _GoogleSignInPageState extends State<GoogleSignInPage> {
               ),
               const SizedBox(height: 15),
               const Text(
-                "Exclusively for you, your friends and IITM. "
+                "Exclusively for you, your friends and insti. "
                 "Use your smail to finish creating your account.",
                 textAlign: TextAlign.center,
                 style: TextStyle(

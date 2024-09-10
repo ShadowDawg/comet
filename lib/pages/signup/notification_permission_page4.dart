@@ -33,7 +33,7 @@ class _NotificationPermissionPageState
     });
   }
 
-  Future<void> _requestPermissionAndNavigate(BuildContext context) async {
+  Future<void> _requestPermissionAndNavigate() async {
     try {
       final messaging = FirebaseMessaging.instance;
 
@@ -54,15 +54,18 @@ class _NotificationPermissionPageState
         }
       }
 
-      _navigateToSignupDetails(context, notificationsEnabled);
+      if (mounted) {
+        _navigateToSignupDetails(notificationsEnabled);
+      }
     } catch (e) {
       print('Error requesting notification permission: $e');
-      _showErrorDialog(context);
+      if (mounted) {
+        _showErrorDialog();
+      }
     }
   }
 
-  void _navigateToSignupDetails(
-      BuildContext context, bool notificationsEnabled) {
+  void _navigateToSignupDetails(bool notificationsEnabled) {
     Navigator.pushReplacement(
       context,
       PageTransition(
@@ -77,37 +80,36 @@ class _NotificationPermissionPageState
     );
   }
 
-  void _showErrorDialog(BuildContext context) {
-  if (context.mounted) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Oops!'),
-          content: const Text(
-              'There was an error requesting notification permissions. You can try again or proceed without notifications.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Proceed Without Notifications'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _navigateToSignupDetails(context, false);
-              },
-            ),
-            TextButton(
-              child: const Text('Try Again'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _requestPermissionAndNavigate(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void _showErrorDialog() {
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Oops!'),
+            content: const Text(
+                'There was an error requesting notification permissions. You can try again or proceed without notifications.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Proceed Without Notifications'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _navigateToSignupDetails(false);
+                },
+              ),
+              TextButton(
+                child: const Text('Try Again'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _requestPermissionAndNavigate();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +163,7 @@ class _NotificationPermissionPageState
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(
-                    onPressed: () => _requestPermissionAndNavigate(context),
+                    onPressed: () => _requestPermissionAndNavigate(),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: darkGreyy,
                       foregroundColor: yelloww,
@@ -179,7 +181,7 @@ class _NotificationPermissionPageState
                     ),
                   ),
                   TextButton(
-                    onPressed: () => _navigateToSignupDetails(context, false),
+                    onPressed: () => _navigateToSignupDetails(false),
                     child: const Text(
                       "Maybe Later",
                       style: TextStyle(

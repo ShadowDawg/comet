@@ -135,18 +135,18 @@ class _BirthplaceInputPageState extends State<BirthplaceInputPage> {
                   fontFamily: 'Manrope',
                 ),
               ),
-              const SizedBox(
-                  height: 8), // Add some space between title and subtitle
-              const Text(
-                'Yeah this too lmao',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors
-                      .white54, // Using yellow for contrast, adjust as needed
-                  fontFamily: 'Manrope',
-                  // fontStyle: FontStyle.italic,
-                ),
-              ),
+              // const SizedBox(
+              //     height: 8), // Add some space between title and subtitle
+              // const Text(
+              //   'Yeah this too lmao',
+              //   style: TextStyle(
+              //     fontSize: 16,
+              //     color: Colors
+              //         .white54, // Using yellow for contrast, adjust as needed
+              //     fontFamily: 'Manrope',
+              //     // fontStyle: FontStyle.italic,
+              //   ),
+              // ),
               const SizedBox(height: 20),
               GooglePlaceAutoCompleteTextField(
                 focusNode: _focusNode,
@@ -234,6 +234,17 @@ class _BirthplaceInputPageState extends State<BirthplaceInputPage> {
               //     fontFamily: 'Manrope',
               //   ),
               // ),
+              const SizedBox(height: 20),
+              Text(
+                'This data is needed for match-making and accurate horoscopes. It is not shared with third parties.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[400],
+                  fontStyle: FontStyle.italic,
+                  fontFamily: 'Manrope',
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _navigateToNextPage,
