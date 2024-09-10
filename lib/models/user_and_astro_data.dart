@@ -1,5 +1,5 @@
-// import 'package:test1/models/astro_data.dart';
-// import 'package:test1/models/user.dart';
+// import 'package:comet/models/astro_data.dart';
+// import 'package:comet/models/user.dart';
 
 // class UserAndAstroData {
 //   final userModel user;

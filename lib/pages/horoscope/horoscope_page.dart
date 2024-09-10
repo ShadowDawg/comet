@@ -1,10 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/models/user.dart';
-import 'package:test1/pages/horoscope/horoscope_widgets.dart';
-import 'package:test1/providers/user_data_provider.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/models/user.dart';
+import 'package:comet/pages/horoscope/horoscope_widgets.dart';
+import 'package:comet/providers/user_data_provider.dart';
 
 class HoroscopePage extends StatefulWidget {
   const HoroscopePage({Key? key}) : super(key: key);

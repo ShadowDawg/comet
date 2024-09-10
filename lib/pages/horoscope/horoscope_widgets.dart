@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:test1/colors.dart';
+import 'package:comet/colors.dart';
 
 String capitalizeEveryWord(String text) {
   if (text.isEmpty) return text;

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:test1/backend/firebase_tools.dart';
-import 'package:test1/models/user.dart';
-import 'package:test1/models/user_and_astro_data.dart';
+import 'package:comet/backend/firebase_tools.dart';
+import 'package:comet/models/user.dart';
+import 'package:comet/models/user_and_astro_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 

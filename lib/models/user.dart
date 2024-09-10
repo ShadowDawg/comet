@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:test1/models/astro_data.dart';
+import 'package:comet/models/astro_data.dart';
 
 class UserModel {
   final String uid;

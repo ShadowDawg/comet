@@ -4,12 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/backend/firebase_tools.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/models/user.dart';
-import 'package:test1/pages/love/chat/chat_page.dart';
-import 'package:test1/pages/love/love_page_widgets.dart';
-import 'package:test1/providers/user_data_provider.dart';
+import 'package:comet/backend/firebase_tools.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/models/user.dart';
+import 'package:comet/pages/love/chat/chat_page.dart';
+import 'package:comet/pages/love/love_page_widgets.dart';
+import 'package:comet/providers/user_data_provider.dart';
 import '../../models/user_and_astro_data.dart'; // Ensur your UserModel correctly
 
 class LovePage extends StatefulWidget {

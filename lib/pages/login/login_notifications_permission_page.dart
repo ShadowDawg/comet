@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/backend/firebase_tools.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/initializer_widget.dart';
-import 'package:test1/providers/user_data_provider.dart';
+import 'package:comet/backend/firebase_tools.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/initializer_widget.dart';
+import 'package:comet/providers/user_data_provider.dart';
 
 class LoginNotificationPermissionPage extends StatelessWidget {
   const LoginNotificationPermissionPage({Key? key}) : super(key: key);

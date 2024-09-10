@@ -6,11 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/backend/firebase_tools.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/initializer_widget.dart';
-import 'package:test1/pages/personal/settings/settings_edit_birth_place.dart';
-import 'package:test1/providers/user_data_provider.dart';
+import 'package:comet/backend/firebase_tools.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/initializer_widget.dart';
+import 'package:comet/pages/personal/settings/settings_edit_birth_place.dart';
+import 'package:comet/providers/user_data_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);

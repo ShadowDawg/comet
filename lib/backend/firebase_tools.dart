@@ -1,4 +1,4 @@
-import 'package:test1/models/friend_basic_data.dart';
+import 'package:comet/models/friend_basic_data.dart';
 
 import '../models/astro_data.dart';
 import '../models/user.dart'; // Make sure to import the user model

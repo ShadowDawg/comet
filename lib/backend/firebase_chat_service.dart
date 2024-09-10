@@ -1,6 +1,6 @@
 import 'package:chatview/chatview.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:test1/models/user.dart';
+import 'package:comet/models/user.dart';
 
 Message mapToMessage(Map<dynamic, dynamic> map) {
   return Message(

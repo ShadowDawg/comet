@@ -2,10 +2,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/firebase_options.dart';
-import 'package:test1/initializer_widget.dart';
-import 'package:test1/providers/user_data_provider.dart';
-import 'package:test1/providers/user_friends_data_provider.dart';
+import 'package:comet/firebase_options.dart';
+import 'package:comet/initializer_widget.dart';
+import 'package:comet/providers/user_data_provider.dart';
+import 'package:comet/providers/user_friends_data_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

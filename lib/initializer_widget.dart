@@ -4,14 +4,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/pages/friends/friends_page.dart';
-import 'package:test1/pages/horoscope/horoscope_page.dart';
-import 'package:test1/pages/love/love_page.dart';
-import 'package:test1/pages/onboarding_welcome_page.dart';
-import 'package:test1/pages/personal/personal_page.dart';
-import 'package:test1/providers/user_data_provider.dart';
-import 'package:test1/utils/error_dialog.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/pages/friends/friends_page.dart';
+import 'package:comet/pages/horoscope/horoscope_page.dart';
+import 'package:comet/pages/love/love_page.dart';
+import 'package:comet/pages/onboarding_welcome_page.dart';
+import 'package:comet/pages/personal/personal_page.dart';
+import 'package:comet/providers/user_data_provider.dart';
+import 'package:comet/utils/error_dialog.dart';
 
 class InitializerWidget extends StatefulWidget {
   const InitializerWidget({Key? key}) : super(key: key);

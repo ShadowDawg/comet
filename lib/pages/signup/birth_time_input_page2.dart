@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/pages/signup/birthplace_input_page3.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/pages/signup/birthplace_input_page3.dart';
 
 class BirthTimeInputPage extends StatefulWidget {
   final DateTime birthday;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/pages/login/login_page.dart';
-import 'package:test1/pages/signup/birthday_input_page1.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/pages/login/login_page.dart';
+import 'package:comet/pages/signup/birthday_input_page1.dart';
 
 class OnboardingWelcomePage extends StatelessWidget {
   const OnboardingWelcomePage({Key? key}) : super(key: key);

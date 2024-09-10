@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/pages/signup/signup_details_page5.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/pages/signup/signup_details_page5.dart';
 
 class NotificationPermissionPage extends StatefulWidget {
   final DateTime birthday;

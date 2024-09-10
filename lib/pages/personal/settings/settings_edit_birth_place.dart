@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-import 'package:test1/colors.dart';
+import 'package:comet/colors.dart';
 
 class EditBirthplacePage extends StatefulWidget {
   final String currentBirthplace;

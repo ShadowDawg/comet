@@ -4,8 +4,8 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/pages/signup/notification_permission_page4.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/pages/signup/notification_permission_page4.dart';
 
 class BirthplaceInputPage extends StatefulWidget {
   final DateTime birthday;

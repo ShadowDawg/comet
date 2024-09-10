@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:test1/colors.dart';
+import 'package:comet/colors.dart';
 
 class MatchmakingInfoWidget extends StatelessWidget {
   const MatchmakingInfoWidget({Key? key}) : super(key: key);

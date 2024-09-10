@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/models/user.dart';
-// import 'package:test1/pages/horoscope_widgets.dart';
-import 'package:test1/pages/personal/personal_page_widgets.dart';
-import 'package:test1/pages/personal/settings/settings_page.dart';
-import 'package:test1/providers/user_data_provider.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/models/user.dart';
+// import 'package:comet/pages/horoscope_widgets.dart';
+import 'package:comet/pages/personal/personal_page_widgets.dart';
+import 'package:comet/pages/personal/settings/settings_page.dart';
+import 'package:comet/providers/user_data_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 

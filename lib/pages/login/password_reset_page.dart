@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:test1/colors.dart';
+import 'package:comet/colors.dart';
 
 class PasswordResetPage extends StatefulWidget {
   @override

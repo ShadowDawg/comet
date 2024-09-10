@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '189041618462',
     projectId: 'astro-app1',
     storageBucket: 'astro-app1.appspot.com',
-    iosBundleId: 'com.example.test1',
+    iosBundleId: 'com.example.comet',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '189041618462',
     projectId: 'astro-app1',
     storageBucket: 'astro-app1.appspot.com',
-    iosBundleId: 'com.example.test1',
+    iosBundleId: 'com.example.comet',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

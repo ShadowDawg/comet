@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/backend/firebase_tools.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/initializer_widget.dart';
-import 'package:test1/models/user.dart';
-import 'package:test1/pages/login/login_notifications_permission_page.dart';
-import 'package:test1/providers/user_data_provider.dart';
-import 'package:test1/pages/login/password_reset_page.dart';
+import 'package:comet/backend/firebase_tools.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/initializer_widget.dart';
+import 'package:comet/models/user.dart';
+import 'package:comet/pages/login/login_notifications_permission_page.dart';
+import 'package:comet/providers/user_data_provider.dart';
+import 'package:comet/pages/login/password_reset_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override

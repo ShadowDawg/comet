@@ -1,6 +1,6 @@
 {
-    "name": "test1",
-    "short_name": "test1",
+    "name": "comet",
+    "short_name": "comet",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/models/user.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/models/user.dart';
 
 class UserProfileHeader extends StatelessWidget {
   final UserModel userData;

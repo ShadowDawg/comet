@@ -9,11 +9,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:test1/colors.dart';
-import 'package:test1/models/user.dart';
-import 'package:test1/providers/user_data_provider.dart';
-import 'package:test1/initializer_widget.dart';
-import 'package:test1/backend/firebase_tools.dart';
+import 'package:comet/colors.dart';
+import 'package:comet/models/user.dart';
+import 'package:comet/providers/user_data_provider.dart';
+import 'package:comet/initializer_widget.dart';
+import 'package:comet/backend/firebase_tools.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 // Define a list of whitelisted email addresses

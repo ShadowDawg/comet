@@ -75,7 +75,7 @@
               "client_id": "189041618462-ag2cpm2qh4o8o655fnsveneg949e060u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.test1"
+                "bundle_id": "com.example.comet"
               }
             }
           ]
@@ -86,7 +86,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:189041618462:android:37ae6bf02812a3b37bc80f",
         "android_client_info": {
-          "package_name": "com.example.test1"
+          "package_name": "com.example.comet"
         }
       },
       "oauth_client": [
@@ -94,7 +94,7 @@
           "client_id": "189041618462-l96fdqnfnm7g5ro3ts1n2oerman3mjjj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.test1",
+            "package_name": "com.example.comet",
             "certificate_hash": "df3024a4325a66c7bddc542fbc5a4bfeebdccbb4"
           }
         },
@@ -102,7 +102,7 @@
           "client_id": "189041618462-p4okjg9aaq7rrthbvjlbn1rqa2qh6b6p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.test1",
+            "package_name": "com.example.comet",
             "certificate_hash": "73cb529ee5369f6e97b870ef2c54ca0731752dad"
           }
         },
@@ -127,7 +127,7 @@
               "client_id": "189041618462-ag2cpm2qh4o8o655fnsveneg949e060u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.test1"
+                "bundle_id": "com.example.comet"
               }
             }
           ]
