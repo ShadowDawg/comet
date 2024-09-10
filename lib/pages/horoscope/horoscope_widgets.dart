@@ -41,7 +41,7 @@ class HoroscopeCard extends StatelessWidget {
     final dayName = DateFormat('EEEE').format(now);
     final monthName = DateFormat('MMMM').format(now);
     final day = DateFormat('d').format(now);
-    return "It's $dayName, $monthName $day. Today at a glance:";
+    return "It's $dayName, $monthName $day. Today's vibe:";
   }
 
   @override
