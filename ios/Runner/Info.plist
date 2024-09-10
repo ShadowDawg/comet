@@ -57,15 +57,28 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app needs Bluetooth access to connect with nearby devices for improved functionality.</string>
+	
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires microphone access for voice messaging and audio features.</string>
+	
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app needs access to Apple Music to allow you to share and play music within the app.</string>
+	
+	<key>NSMotionUsageDescription</key>
+	<string>This app uses motion data to provide step counting and activity tracking features.</string>
+	
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to convert your voice into text for easier messaging.</string>
+	
+	<key>NSSiriUsageDescription</key>
+	<string>This app integrates with Siri to allow voice commands for quick actions.</string>
 </dict>
 </plist>
