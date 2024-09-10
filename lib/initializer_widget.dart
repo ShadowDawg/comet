@@ -76,8 +76,8 @@ class _InitializerWidgetState extends State<InitializerWidget> {
         userDataProvider.clearUserData();
       }
     } catch (e) {
-      print("Error during initialization: $e");
-      _errorMessage = "Failed to initialize: ${e.toString()}";
+      print("Error during initialization, go to onboarding!: $e");
+      _errorMessage = "The stars are acting sus. You'll have to login again :(";
     } finally {
       _connectionMessageTimer?.cancel();
       if (mounted) {
@@ -136,7 +136,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
         } else if (_errorMessage != null) {
           return Scaffold(
             body: Center(
-              child: ErrorDialog(
+              child: SimpleErrorDialog(
                 message: _errorMessage!,
                 onRetry: _initializeUser,
               ),
@@ -253,6 +253,41 @@ class _NavigationHomeState extends State<NavigationHome> {
           indicatorColor: yelloww,
         ),
       ),
+    );
+  }
+}
+
+
+class SimpleErrorDialog extends StatelessWidget {
+  final String message;
+  final VoidCallback? onRetry;
+
+  const SimpleErrorDialog({super.key, required this.message, this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Error'),
+      content: Text(message),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('OK'),
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const OnboardingWelcomePage()),
+            );
+          },
+        ),
+        if (onRetry != null)
+          TextButton(
+            child: Text('Retry'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              onRetry!();
+            },
+          ),
+      ],
     );
   }
 }
