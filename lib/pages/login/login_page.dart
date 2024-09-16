@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:comet/backend/firebase_tools.dart';
 import 'package:comet/colors.dart';
 import 'package:comet/initializer_widget.dart';
 import 'package:comet/models/user.dart';
+import 'package:comet/pages/signup/google_signup_page6.dart';
 import 'package:comet/pages/login/login_notifications_permission_page.dart';
 import 'package:comet/providers/user_data_provider.dart';
-import 'package:comet/pages/login/password_reset_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _showConnectionMessage = false;
 
   @override
   void dispose() {
@@ -50,80 +52,16 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  Widget _buildTextField(
-    TextEditingController controller,
-    String label,
-    String? Function(String?) validator, {
-    bool isPassword = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextFormField(
-        controller: controller,
-        obscureText: isPassword && _obscurePassword,
-        style: const TextStyle(
-          fontFamily: 'Manrope',
-          color: offwhite,
-        ),
-        decoration: InputDecoration(
-          hintText: label,
-          hintStyle: const TextStyle(
-            fontFamily: 'Manrope',
-            color: greyy,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: darkGreyy,
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    color: offwhite,
-                  ),
-                  onPressed: () {
-                    if (mounted) {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    }
-                  },
-                )
-              : null,
-        ),
-        validator: validator,
-      ),
-    );
-  }
-
   void _showErrorDialog(String message) {
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        backgroundColor: darkGreyy,
-        title: const Text(
-          'Login Error',
-          style: TextStyle(
-            fontFamily: "manrope",
-            color: offwhite,
-          ),
-        ),
-        content: Text(
-          message,
-          style: const TextStyle(
-            fontFamily: "manrope",
-            color: greyy,
-          ),
-        ),
+        title: const Text('Login Error'),
+        content: Text(message),
         actions: [
           TextButton(
-            child: const Text(
-              'Okay',
-              style: TextStyle(
-                fontFamily: "manrope",
-                color: greyy,
-              ),
-            ),
+            child: const Text('Okay'),
             onPressed: () => Navigator.of(context).pop(),
           )
         ],
@@ -131,62 +69,115 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+  Future<void> _loginWithGoogle() async {
+    if (!mounted) return;
 
-      try {
-        final UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+    setState(() {
+      _isLoading = true;
+      _showConnectionMessage = false;
+    });
 
-        UserModel userData =
-            await backendFirebaseGetUserData(userCredential.user!.uid);
+    // Start a timer to show the connection message after 5 seconds
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _showConnectionMessage = true;
+        });
+      }
+    });
+
+    try {
+      // Sign out the current Google user to always show the account picker
+      await GoogleSignIn().signOut();
+
+      // Trigger the Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        // User canceled the sign-in process
+        throw Exception('Google Sign-In was canceled');
+      }
+
+      // Check if the email is a valid college email or in the whitelist
+      if (!googleUser.email.toLowerCase().endsWith('@smail.iitm.ac.in') &&
+          !whitelistedEmails.contains(googleUser.email.toLowerCase())) {
         if (mounted) {
-          Provider.of<UserDataProvider>(context, listen: false)
-              .setUserData(userData);
+          _showErrorDialog(
+              'Please use your college email address ending with @smail.iitm.ac.in');
         }
+        return;
+      }
 
-        if (!userData.notificationsEnabled) {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              PageTransition(
-                type: PageTransitionType.topToBottom,
-                child: const LoginNotificationPermissionPage(),
-              ),
-            );
-          }
-        } else {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              PageTransition(
-                type: PageTransitionType.topToBottom,
-                child: const NavigationHome(),
-              ),
-            );
-          }
-        }
-      } on FirebaseAuthException catch (e) {
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the Google credential
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Fetch user data
+      UserModel userData =
+          await backendFirebaseGetUserData(userCredential.user!.uid);
+
+      if (!mounted) return;
+
+      // Update user data in the provider
+      Provider.of<UserDataProvider>(context, listen: false)
+          .setUserData(userData);
+
+      // Navigate based on notification settings
+      if (!userData.notificationsEnabled) {
+        Navigator.pushReplacement(
+          context,
+          PageTransition(
+            type: PageTransitionType.topToBottom,
+            child: const LoginNotificationPermissionPage(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          PageTransition(
+            type: PageTransitionType.topToBottom,
+            child: const NavigationHome(),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
         if (e.code == 'user-not-found') {
-          _showErrorDialog('No account found with this email.');
-        } else if (e.code == 'wrong-password') {
-          _showErrorDialog('Incorrect password. Please try again.');
-        } else if (e.code == 'invalid-credential') {
-          _showErrorDialog('The email or password used is incorrect.');
+          _showErrorDialog(
+              'No account found with this email. Please create an account first.');
         } else {
-          _showErrorDialog(e.message ?? 'An error occurred during login');
+          _showErrorDialog(
+              e.message ?? 'An error occurred during Google sign-in');
         }
-      } catch (e) {
-        _showErrorDialog('An unexpected error occurred during login.');
-      } finally {
+      }
+    } catch (e) {
+      if (mounted) {
+        if (e is Exception &&
+            e.toString().contains('Google Sign-In was canceled')) {
+          // User canceled the sign-in process, no need to show an error
+          print('Google Sign-In was canceled by the user');
+        } else {
+          print(e);
+          // assuming that this is only called when no account associated with valid email
+          _showErrorDialog(
+              'An unexpected error occurred during Google sign-in.');
+        }
+      }
+    } finally {
+      if (mounted) {
         setState(() {
           _isLoading = false;
+          _showConnectionMessage = false;
         });
       }
     }
@@ -195,87 +186,83 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgcolor,
+      backgroundColor: yelloww,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: yelloww),
+          icon: const Icon(Icons.arrow_back, color: bgcolor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'welcome back.',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: yelloww,
-                        fontFamily: 'Playwrite_HU',
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 40),
-                    _buildTextField(_emailController, 'Email', _validateEmail),
-                    _buildTextField(
-                        _passwordController, 'Password', _validatePassword,
-                        isPassword: true),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: PasswordResetPage(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'welcome back.',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: bgcolor,
+                    fontFamily: 'Playwrite_HU',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                _isLoading
+                    ? Column(
+                        children: [
+                          const CircularProgressIndicator(color: bgcolor),
+                          if (_showConnectionMessage)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Text(
+                                'Yup, the stars are really spitting right now. Just a sec...',
+                                style: TextStyle(
+                                  // color: Colors.red[700],
+                                  color: Colors.black45,
+                                  fontSize: 16,
+                                  fontFamily: 'Manrope',
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          );
-                        },
-                        child: const Text(
-                          'Forgot password?',
+                        ],
+                      )
+                    : ElevatedButton.icon(
+                        onPressed: _loginWithGoogle,
+                        icon: const FaIcon(
+                          FontAwesomeIcons.google,
+                          color: yelloww,
+                        ),
+                        // icon: Image.asset(
+                        //   // 'assets/google_logo.png',
+                        //   'assets/icons/libra-icon.png',
+                        //   height: 24.0,
+                        // ),
+                        label: const Text(
+                          'Login with smail',
                           style: TextStyle(
                             color: yelloww,
+                            fontSize: 18,
                             fontFamily: 'Manrope',
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: yelloww,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: bgcolor,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: yelloww,
-                            )
-                          : const Text(
-                              'Login',
-                              style: TextStyle(
-                                color: bgcolor,
-                                fontSize: 18,
-                                fontFamily: 'Manrope',
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
         ),

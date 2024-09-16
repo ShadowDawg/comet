@@ -407,6 +407,8 @@ class _ChatPageState extends State<ChatPage> {
                       backgroundColor: yelloww.withOpacity(0.7),
                     ),
                     sendMessageConfig: const SendMessageConfiguration(
+                      enableCameraImagePicker: false,
+                      enableGalleryImagePicker: false,
                       textFieldBackgroundColor: tile_color,
                       // textFieldBackgroundColor: bgcolor, // light
                       textFieldConfig: TextFieldConfiguration(

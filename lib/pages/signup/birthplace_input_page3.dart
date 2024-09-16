@@ -236,7 +236,7 @@ class _BirthplaceInputPageState extends State<BirthplaceInputPage> {
               // ),
               const SizedBox(height: 20),
               Text(
-                'This data is needed for match-making and accurate horoscopes. It is not shared with third parties.',
+                'This data is needed for our unique match-making. It is not shared with third parties.',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey[400],
