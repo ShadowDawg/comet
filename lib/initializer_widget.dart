@@ -217,10 +217,10 @@ class _NavigationHomeState extends State<NavigationHome> {
         data: Theme.of(context).copyWith(
           navigationBarTheme: NavigationBarThemeData(
             indicatorColor: yelloww,
-            labelTextStyle: WidgetStateProperty.all(
+            labelTextStyle: MaterialStateProperty.all(
               const TextStyle(color: yelloww),
             ),
-            iconTheme: WidgetStateProperty.resolveWith((states) {
+            iconTheme: MaterialStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
                 return const IconThemeData(color: bgcolor);
               }
