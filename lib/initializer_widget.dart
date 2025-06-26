@@ -73,7 +73,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
         await userDataProvider.fetchUserData(user.uid);
       } else {
         print("No user logged in");
-        userDataProvider.clearUserData();
+        await userDataProvider.clearUserData();
       }
     } catch (e) {
       print("Error during initialization, go to onboarding!: $e");
@@ -211,8 +211,11 @@ class _NavigationHomeState extends State<NavigationHome> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _pages(context);
+    final safeIndex = _selectedIndex < pages.length ? _selectedIndex : 0;
+    
     return Scaffold(
-      body: _pages(context).elementAt(_selectedIndex),
+      body: pages.elementAt(safeIndex),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           navigationBarTheme: NavigationBarThemeData(

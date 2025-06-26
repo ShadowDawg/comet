@@ -43,8 +43,11 @@ Future<void> backendFirebaseUpdateMatchApproved(
   var url = Uri.parse('$apiUrl/updateMatchApproved');
   print(userUid);
   try {
-    var response = await http.post(url,
-        body: jsonEncode({'userUid': userUid, 'changeTo': changeTo}));
+    var response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'userUid': userUid, 'changeTo': changeTo}),
+    );
     if (response.statusCode == 200) {
       print("Match approval updated successfully to $changeTo.");
     } else {
