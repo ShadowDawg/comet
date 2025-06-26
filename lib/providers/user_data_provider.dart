@@ -64,16 +64,16 @@ class UserDataProvider extends ChangeNotifier {
     }
   }
 
-  void setUserData(UserModel data) {
+  Future<void> setUserData(UserModel data) async {
     _userData = data;
-    _saveToLocalStorage(data);
+    await _saveToLocalStorage(data);
     notifyListeners();
   }
 
-  void updateUserData(UserModel Function(UserModel) update) {
+  Future<void> updateUserData(UserModel Function(UserModel) update) async {
     if (_userData != null) {
       _userData = update(_userData!);
-      _saveToLocalStorage(_userData!);
+      await _saveToLocalStorage(_userData!);
       notifyListeners();
     }
   }
